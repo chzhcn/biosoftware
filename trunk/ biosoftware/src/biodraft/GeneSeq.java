@@ -6,7 +6,6 @@
 package biodraft;
 
 import java.sql.*;
-import org.sqlite.JDBC;
 import java.util.ArrayList;
 /**
  *

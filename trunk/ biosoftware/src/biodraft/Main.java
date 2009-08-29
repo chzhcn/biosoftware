@@ -6,13 +6,12 @@
 package biodraft;
 
 import java.sql.*;
-import org.sqlite.JDBC;
 /**
  *
  * @author Owner
  */
 public class Main {
-
+    //for r2
     /**
      * @param args the command line arguments
      */
