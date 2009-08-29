@@ -42,7 +42,13 @@ public class Main {
 //        DataGroup.getAllGroups();
         DataGroup.getGroupIDByName("testGroup");
 
-      
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new MainFrame().setVisible(true);
+            }
+        });
+
+
     }
 
 }
