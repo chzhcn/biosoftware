@@ -12,8 +12,7 @@
 package biodraft;
 
 import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JFrame;
 /**
  *
  * @author Administrator
@@ -89,6 +88,10 @@ public class MainFrame extends javax.swing.JFrame {
         frameSplitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
         treeScrollPane.setMinimumSize(new java.awt.Dimension(35, 35));
+
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
+        seqTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        seqTree.setRootVisible(false);
         treeScrollPane.setViewportView(seqTree);
 
         topSplitPane.setLeftComponent(treeScrollPane);
@@ -112,6 +115,11 @@ public class MainFrame extends javax.swing.JFrame {
         maxSpinner.setEnabled(false);
 
         editTogButton.setText("Edit");
+        editTogButton.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                handleEditButtonStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout thresPanelLayout = new javax.swing.GroupLayout(thresPanel);
         thresPanel.setLayout(thresPanelLayout);
@@ -392,9 +400,19 @@ public class MainFrame extends javax.swing.JFrame {
         fileMenu.add(newDataGroupMenuItem);
 
         openDataGroupMenuItem.setText("Open Data Group");
+        openDataGroupMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                handleOpenMenuItemClicked(evt);
+            }
+        });
         fileMenu.add(openDataGroupMenuItem);
 
         deleteDataGroupMenuItem.setText("Delete Data Group");
+        deleteDataGroupMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                handleDeleteMenuClicked(evt);
+            }
+        });
         fileMenu.add(deleteDataGroupMenuItem);
 
         newDataBaseMenuItem.setText("Import New Database");
@@ -430,6 +448,33 @@ public class MainFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void handleEditButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_handleEditButtonStateChanged
+        // TODO add your handling code here:
+        if(editTogButton.getText() == "Edit") {
+            editTogButton.setText("Finish");
+        } else {
+            editTogButton.setText("Edit");
+        }
+    }//GEN-LAST:event_handleEditButtonStateChanged
+
+    private void handleOpenMenuItemClicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_handleOpenMenuItemClicked
+        // TODO add your handling code here:
+//        new GroupPanel(this).setVisible(true);
+//        new GroupFrame().setVisible(true);
+        GroupFrame frame = new GroupFrame();
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.getButton().setText("Open");
+        frame.setVisible(true);
+    }//GEN-LAST:event_handleOpenMenuItemClicked
+
+    private void handleDeleteMenuClicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_handleDeleteMenuClicked
+        // TODO add your handling code here:
+        GroupFrame frame = new GroupFrame();
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.getButton().setText("Delete");
+        frame.setVisible(true);
+    }//GEN-LAST:event_handleDeleteMenuClicked
 
     /**
     * @param args the command line arguments
