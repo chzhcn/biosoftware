@@ -14,18 +14,51 @@ import java.util.ArrayList;
 public class DataGroup {
 
     private String name;
+    private int lowPrimerLength;
+    private int lowFilterLength;
+    private int lowVariableRegionLength;
+    private int highVariableRegionLength;
 
-    public DataGroup(String s) throws SQLException {
-        name = s;
+    public DataGroup(String name, int lowPrimerLength, int lowFilterLength,
+            int lowVariableRegionLength, int highVariableRegionLength) {
+        this.name = name;
+        this.lowPrimerLength = lowPrimerLength;
+        this.lowFilterLength = lowFilterLength;
+        this.lowVariableRegionLength = lowVariableRegionLength;
+        this.highVariableRegionLength = highVariableRegionLength;
+    }
+
+    public int getHighVariableRegionLength() {
+        return highVariableRegionLength;
+    }
+
+    public int getLowFilterLength() {
+        return lowFilterLength;
+    }
+
+    public int getLowPrimerLength() {
+        return lowPrimerLength;
+    }
+
+    public int getLowVariableRegionLength() {
+        return lowVariableRegionLength;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public static boolean addGroup(DataGroup group) {
         boolean flag = false;
         try {
 //            Connection con = DriverManager.getConnection("jdbc:sqlite:BioData.db");
-            String sql = "insert into DataGroup values(?)";
+            String sql = "insert into DataGroup values(?, ?, ?, ?, ?)";
             PreparedStatement ps = Main.con.prepareStatement(sql);
-            ps.setString(1, group.getGroupName());
+            ps.setString(1, group.getName());
+            ps.setInt(2, group.getLowPrimerLength());
+            ps.setInt(3, group.getLowFilterLength());
+            ps.setInt(4, group.getLowVariableRegionLength());
+//            ps.setInt(5, group.getH);
             ps.executeUpdate();
 //            Main.con.close();
             flag = true;
@@ -67,7 +100,7 @@ public class DataGroup {
 //        return flag;
 //    }
 
-    public static int getGroupID(String s) {
+    public static int getGroupIDByName(String s) {
         int id = -1;
         try {
             String sql = "select rowid from DataGroup where name = ?";
@@ -95,7 +128,8 @@ public class DataGroup {
             while (rs.next()) {
 //                System.out.println(rs.getInt("rowid") + rs.getString("name"));
 //                System.out.println(rs.getInt("rowid"));
-                groups.add(new DataGroup(rs.getString("name")));
+                groups.add(new DataGroup(rs.getString("name"), rs.getInt("lpth"),
+                        rs.getInt("lfth"), rs.getInt("lvth"), rs.getInt("hvth")));
             }
             rs.close();
 //            con.close();
@@ -122,7 +156,4 @@ public class DataGroup {
         return flag;
     }
 
-    public String getGroupName() {
-        return name;
-    }
 }

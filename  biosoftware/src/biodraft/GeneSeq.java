@@ -25,7 +25,7 @@ public class GeneSeq {
     public static boolean addGene(GeneSeq gene) {
         boolean flag = false;
         try{
-            String sql = "insert into GeneSeq values(?,?,?)";
+            String sql = "insert into GeneSeq values(?, ?, ?)";
             PreparedStatement ps = Main.con.prepareStatement(sql);
             ps.setString(1, gene.getGeneName());
             ps.setString(2, gene.getGeneSequence());
