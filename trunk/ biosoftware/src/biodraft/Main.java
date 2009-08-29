@@ -24,7 +24,8 @@ public class Main {
 // Initialize Database
         con = DriverManager.getConnection("jdbc:sqlite:BioData.db");
 //        Statement stat = con.createStatement();
-//        stat.executeUpdate("create table DataGroup(name varchar primary key)");
+//        stat.executeUpdate("create table DataGroup(name varchar primary key, lpth integer not null," +
+//                " lfth integer not null, lvth integer not null, hvth integer not null)");
 //        stat.executeUpdate("create table GeneSeq(name varchar primary key, sequence varchar not null, " +
 //                "groupid integer not null)");
 //        stat.executeUpdate("create table PrimerPair(forstart integer not null, forend integer not null, " +
@@ -39,7 +40,7 @@ public class Main {
 //        DataGroup.setGroupName("testGroup", "testGroup2");
 //        DataGroup.deleteGroupByID(3);
 //        DataGroup.getAllGroups();
-        DataGroup.getGroupID("testGroup");
+        DataGroup.getGroupIDByName("testGroup");
 
       
     }
