@@ -28,10 +28,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
  *
  * @author Administrator
  */
-public class MainFrame extends javax.swing.JFrame {
+public class MainFrame extends javax.swing.JFrame implements GroupSetable{
 
 //    public static Connection con;
-    public static String selectedGroup = "root";
+//    public static String selectedGroup = "root";
 
     /** Creates new form MainFrame */
     public MainFrame() {
@@ -99,11 +99,6 @@ public class MainFrame extends javax.swing.JFrame {
         aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowActivated(java.awt.event.WindowEvent evt) {
-                formWindowActivated(evt);
-            }
-        });
 
         frameSplitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
@@ -111,6 +106,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
         seqTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        seqTree.setRootVisible(false);
         treeScrollPane.setViewportView(seqTree);
 
         topSplitPane.setLeftComponent(treeScrollPane);
@@ -134,9 +130,10 @@ public class MainFrame extends javax.swing.JFrame {
         maxSpinner.setEnabled(false);
 
         editTogButton.setText("Edit");
-        editTogButton.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                handleEditButtonStateChanged(evt);
+        editTogButton.setEnabled(false);
+        editTogButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editTogButtonActionPerformed(evt);
             }
         });
 
@@ -150,21 +147,21 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(thresPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pThreSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(fThreSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(60, 60, 60)
+                .addGroup(thresPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(fThreSpinner)
+                    .addComponent(pThreSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE))
+                .addGap(39, 39, 39)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(thresPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, thresPanelLayout.createSequentialGroup()
-                        .addComponent(minSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(24, 24, 24)
+                        .addComponent(minSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(maxSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(maxSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(editTogButton, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap(180, Short.MAX_VALUE))
+                .addContainerGap(156, Short.MAX_VALUE))
         );
         thresPanelLayout.setVerticalGroup(
             thresPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -247,12 +244,22 @@ public class MainFrame extends javax.swing.JFrame {
         selectPrimerPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Selected Primer"));
 
         customizedRadioButton.setText("Use Customized Primer");
+        customizedRadioButton.setEnabled(false);
+        customizedRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                customizedRadioButtonActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("Forward Primer:");
 
         jLabel6.setText("Start:");
 
+        forStartSpinner.setEnabled(false);
+
         jLabel7.setText("End:");
+
+        forEndSpinner.setEnabled(false);
 
         forPrimerText.setEditable(false);
         forPrimerText.setText("AGCTTTTTT");
@@ -261,7 +268,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         jLabel9.setText("Start:");
 
+        revStartSpinner.setEnabled(false);
+
         jLabel10.setText("End:");
+
+        revEndSpinner.setEnabled(false);
 
         revPrimerText.setEditable(false);
         revPrimerText.setText("AGCTTTTTT");
@@ -282,9 +293,9 @@ public class MainFrame extends javax.swing.JFrame {
                                     .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jLabel9))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(revEndSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(revStartSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(revEndSpinner)
+                                    .addComponent(revStartSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)))))
                     .addComponent(customizedRadioButton)
                     .addComponent(jLabel5)
                     .addGroup(selectPrimerPanelLayout.createSequentialGroup()
@@ -296,9 +307,9 @@ public class MainFrame extends javax.swing.JFrame {
                                     .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(forEndSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(forStartSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(forEndSpinner)
+                                    .addComponent(forStartSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)))))
                     .addComponent(jLabel8))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -500,19 +511,13 @@ public class MainFrame extends javax.swing.JFrame {
             }
 
             Controller.refreshTree(seqTree, groupName);
+            editTogButton.setEnabled(true);
+            customizedRadioButton.setEnabled(true);
 //            if (null != groupName) {
 //            }
         }
 //        newDataGroupFileChooser.setVisible(true);
     }//GEN-LAST:event_newDataGroupMenuItemActionPerformed
-    private void handleEditButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_handleEditButtonStateChanged
-        // TODO add your handling code here:
-        if (editTogButton.getText() == "Edit") {
-            editTogButton.setText("Finish");
-        } else {
-            editTogButton.setText("Edit");
-        }
-    }//GEN-LAST:event_handleEditButtonStateChanged
 
     private void handleOpenMenuItemClicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_handleOpenMenuItemClicked
         // TODO add your handling code here:
@@ -521,15 +526,8 @@ public class MainFrame extends javax.swing.JFrame {
 //        GroupFrame frame = new GroupFrame();
 //        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 //        frame.getButton().setText("Open");
-        GroupDialog group = new GroupDialog(this, true);
-        String[] columnNames = {"Data Group Name", "Total number of genes"};
-        ArrayList<DataGroup> groupList = DataGroup.getAllGroups();
-        Object[][] data = new Object[groupList.size()][2];
-        for (int i = 0; i < groupList.size(); i ++) {
-            data[i][0] = groupList.get(i).getName();
-            data[i][1] = GeneSeq.getGeneNumByGroupName(groupList.get(i).getName());
-        }
-        group.setTableModel(new MyTableModel(columnNames, data));
+        GroupDialog group = new GroupDialog(this, true, this);
+        populateGroupTable(group);
         group.setVisible(true);
     }//GEN-LAST:event_handleOpenMenuItemClicked
 
@@ -538,7 +536,46 @@ public class MainFrame extends javax.swing.JFrame {
 //        GroupFrame frame = new GroupFrame();
 //        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 //        frame.getButton().setText("Delete");
-        GroupDialog group = new GroupDialog(this, true);
+         GroupDialog group = new GroupDialog(this, true, this);
+         populateGroupTable(group);
+         group.setVisible(true);
+//        this.setTitle(group.getSelectedGroup());
+    }//GEN-LAST:event_handleDeleteMenuClicked
+
+    private void editTogButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editTogButtonActionPerformed
+        // TODO add your handling code here:
+        if (editTogButton.getText() == "Edit") {
+            editTogButton.setText("Finish");
+            pThreSpinner.setEnabled(true);
+            fThreSpinner.setEnabled(true);
+            maxSpinner.setEnabled(true);
+            minSpinner.setEnabled(true);
+        } else {
+            editTogButton.setText("Edit");
+            pThreSpinner.setEnabled(false);
+            fThreSpinner.setEnabled(false);
+            maxSpinner.setEnabled(false);
+            minSpinner.setEnabled(false);
+            //check the thresholds and search for primer
+        }
+    }//GEN-LAST:event_editTogButtonActionPerformed
+
+    private void customizedRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customizedRadioButtonActionPerformed
+        // TODO add your handling code here:
+        if (forStartSpinner.isEnabled() == true) {
+            forStartSpinner.setEnabled(false);
+            forEndSpinner.setEnabled(false);
+            revStartSpinner.setEnabled(false);
+            revEndSpinner.setEnabled(false);
+        } else {
+            forStartSpinner.setEnabled(true);
+            forEndSpinner.setEnabled(true);
+            revStartSpinner.setEnabled(true);
+            revEndSpinner.setEnabled(true);
+        }
+    }//GEN-LAST:event_customizedRadioButtonActionPerformed
+
+    public void populateGroupTable( GroupDialog group) {
         String[] columnNames = {"Data Group Name", "Total number of genes"};
         ArrayList<DataGroup> groupList = DataGroup.getAllGroups();
         Object[][] data = new Object[groupList.size()][2];
@@ -547,25 +584,22 @@ public class MainFrame extends javax.swing.JFrame {
             data[i][1] = GeneSeq.getGeneNumByGroupName(groupList.get(i).getName());
         }
         group.setTableModel(new MyTableModel(columnNames, data));
-        group.setVisible(true);
-//        this.setTitle(group.getSelectedGroup());
-    }//GEN-LAST:event_handleDeleteMenuClicked
+    }
 
-    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        // TODO add your handling code here:
-        System.out.println(selectedGroup);
-        DefaultMutableTreeNode root = (DefaultMutableTreeNode)seqTree.getModel().getRoot();
-//        if (root.getChildCount() != 0) {
-            String s = root.toString();
-            System.out.println(s);
-            if(selectedGroup == "root") {
-                selectedGroup = s;
-            }
-            if(selectedGroup != s) {
-                Controller.refreshTree(seqTree, selectedGroup);
-            }
-//        }
-    }//GEN-LAST:event_formWindowActivated
+    public void setGroup(String name) {
+       DefaultMutableTreeNode root = (DefaultMutableTreeNode)seqTree.getModel().getRoot();
+       String rootName = root.toString();
+       if(name != rootName) {
+           Controller.refreshTree(seqTree, name);
+           editTogButton.setEnabled(true);
+           customizedRadioButton.setEnabled(true);
+           DataGroup datagroup = DataGroup.getGroupByName(name);
+           pThreSpinner.setValue(datagroup.getLowPrimerLength());
+           fThreSpinner.setValue(datagroup.getLowFilterLength());
+           maxSpinner.setValue(datagroup.getHighVariableRegionLength());
+           minSpinner.setValue(datagroup.getLowVariableRegionLength());
+       }
+   }
     /**
      * @param args the command line arguments
      */

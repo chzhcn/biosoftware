@@ -128,6 +128,23 @@ public class DataGroup {
         return id;
     }
 
+    public static DataGroup getGroupByName( String name) {
+        DataGroup group = null;
+        try {
+            String sql = "select * from DataGroup where name = ?";
+            PreparedStatement ps = Main.con.prepareStatement(sql);
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                group = new DataGroup(name, rs.getInt("lpth"), rs.getInt("lfth"), rs.getInt("lvth"), rs.getInt("hvth"));
+            }
+            rs.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return group;
+    }
+
     public static ArrayList<DataGroup> getAllGroups() {
         ArrayList<DataGroup> groups = new ArrayList<DataGroup>();
         try {

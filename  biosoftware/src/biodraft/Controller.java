@@ -87,7 +87,7 @@ public class Controller {
             dataGroup.add(gene);
         }
         seqTree.setModel(new DefaultTreeModel(dataGroup));
-//        seqTree.setRootVisible(false);
+        seqTree.setRootVisible(true);
         seqTree.setVisible(true);
     }
 }

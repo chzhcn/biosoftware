@@ -66,9 +66,6 @@
     <SyntheticProperty name="menuBar" type="java.lang.String" value="menuBar"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
   </SyntheticProperties>
-  <Events>
-    <EventHandler event="windowActivated" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowActivated"/>
-  </Events>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -140,6 +137,7 @@
                     <Property name="model" type="javax.swing.tree.TreeModel" editor="org.netbeans.modules.form.editors2.TreeModelEditor">
                       <TreeModel code=""/>
                     </Property>
+                    <Property name="rootVisible" type="boolean" value="false"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -196,24 +194,24 @@
                                   <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="pThreSpinner" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="fThreSpinner" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="fThreSpinner" max="32767" attributes="1"/>
+                                  <Component id="pThreSpinner" alignment="0" pref="50" max="32767" attributes="1"/>
                               </Group>
-                              <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
                               <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="1" attributes="0">
-                                      <Component id="minSpinner" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                                      <Component id="minSpinner" min="-2" pref="49" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
                                       <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="maxSpinner" min="-2" max="-2" attributes="0"/>
+                                      <Component id="maxSpinner" min="-2" pref="53" max="-2" attributes="0"/>
                                   </Group>
                                   <Component id="editTogButton" alignment="1" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="180" max="32767" attributes="0"/>
+                              <EmptySpace pref="156" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -291,9 +289,10 @@
                     <Component class="javax.swing.JToggleButton" name="editTogButton">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Edit"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="handleEditButtonStateChanged"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editTogButtonActionPerformed"/>
                       </Events>
                     </Component>
                   </SubComponents>
@@ -411,9 +410,9 @@
                                               <Component id="jLabel9" alignment="1" min="-2" max="-2" attributes="1"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="revEndSpinner" alignment="0" min="-2" max="-2" attributes="0"/>
-                                              <Component id="revStartSpinner" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                              <Component id="revEndSpinner" max="32767" attributes="1"/>
+                                              <Component id="revStartSpinner" alignment="0" pref="49" max="32767" attributes="1"/>
                                           </Group>
                                       </Group>
                                   </Group>
@@ -430,9 +429,9 @@
                                               <Component id="jLabel6" alignment="1" max="32767" attributes="1"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="forEndSpinner" alignment="0" min="-2" max="-2" attributes="0"/>
-                                              <Component id="forStartSpinner" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                              <Component id="forEndSpinner" max="32767" attributes="1"/>
+                                              <Component id="forStartSpinner" alignment="0" pref="50" max="32767" attributes="1"/>
                                           </Group>
                                       </Group>
                                   </Group>
@@ -485,7 +484,11 @@
                 <Component class="javax.swing.JRadioButton" name="customizedRadioButton">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Use Customized Primer"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="customizedRadioButtonActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel5">
                   <Properties>
@@ -498,6 +501,9 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JSpinner" name="forStartSpinner">
+                  <Properties>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel7">
                   <Properties>
@@ -505,6 +511,9 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JSpinner" name="forEndSpinner">
+                  <Properties>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="forPrimerText">
                   <Properties>
@@ -523,6 +532,9 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JSpinner" name="revStartSpinner">
+                  <Properties>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel10">
                   <Properties>
@@ -530,6 +542,9 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JSpinner" name="revEndSpinner">
+                  <Properties>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="revPrimerText">
                   <Properties>
