@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 
 
@@ -21,6 +22,7 @@ import javax.swing.JFrame;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  *
@@ -28,7 +30,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class MainFrame extends javax.swing.JFrame {
 
-    public static Connection con;
+//    public static Connection con;
+    public static String selectedGroup = "root";
 
     /** Creates new form MainFrame */
     public MainFrame() {
@@ -96,6 +99,11 @@ public class MainFrame extends javax.swing.JFrame {
         aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
 
         frameSplitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
@@ -156,7 +164,7 @@ public class MainFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(maxSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(editTogButton, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap(225, Short.MAX_VALUE))
+                .addContainerGap(180, Short.MAX_VALUE))
         );
         thresPanelLayout.setVerticalGroup(
             thresPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -200,9 +208,9 @@ public class MainFrame extends javax.swing.JFrame {
         priemrPanel.setLayout(priemrPanelLayout);
         priemrPanelLayout.setHorizontalGroup(
             priemrPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 730, Short.MAX_VALUE)
+            .addGap(0, 685, Short.MAX_VALUE)
             .addGroup(priemrPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(primerScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 730, Short.MAX_VALUE))
+                .addComponent(primerScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 685, Short.MAX_VALUE))
         );
         priemrPanelLayout.setVerticalGroup(
             priemrPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -356,11 +364,11 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, typingPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(typingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(resultScrollPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
+                    .addComponent(resultScrollPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 467, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, typingPanelLayout.createSequentialGroup()
                         .addComponent(jLabel11)
                         .addGap(10, 10, 10)
-                        .addComponent(pathText, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE))
+                        .addComponent(pathText, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE))
                     .addGroup(typingPanelLayout.createSequentialGroup()
                         .addComponent(fileButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -389,18 +397,18 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(bottomPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(selectPrimerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(typingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         bottomPanelLayout.setVerticalGroup(
             bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bottomPanelLayout.createSequentialGroup()
+            .addGroup(bottomPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(typingPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(selectPrimerPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(421, 421, 421))
+                .addGroup(bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(typingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(selectPrimerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         frameSplitPane.setRightComponent(bottomPanel);
@@ -451,15 +459,15 @@ public class MainFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(frameSplitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 810, Short.MAX_VALUE)
+                .addComponent(frameSplitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 765, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(frameSplitPane, javax.swing.GroupLayout.PREFERRED_SIZE, 583, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(frameSplitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -497,7 +505,6 @@ public class MainFrame extends javax.swing.JFrame {
         }
 //        newDataGroupFileChooser.setVisible(true);
     }//GEN-LAST:event_newDataGroupMenuItemActionPerformed
-//=======
     private void handleEditButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_handleEditButtonStateChanged
         // TODO add your handling code here:
         if (editTogButton.getText() == "Edit") {
@@ -511,19 +518,54 @@ public class MainFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
 //        new GroupPanel(this).setVisible(true);
 //        new GroupFrame().setVisible(true);
-        GroupFrame frame = new GroupFrame();
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        frame.getButton().setText("Open");
-        frame.setVisible(true);
+//        GroupFrame frame = new GroupFrame();
+//        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+//        frame.getButton().setText("Open");
+        GroupDialog group = new GroupDialog(this, true);
+        String[] columnNames = {"Data Group Name", "Total number of genes"};
+        ArrayList<DataGroup> groupList = DataGroup.getAllGroups();
+        Object[][] data = new Object[groupList.size()][2];
+        for (int i = 0; i < groupList.size(); i ++) {
+            data[i][0] = groupList.get(i).getName();
+            data[i][1] = GeneSeq.getGeneNumByGroupName(groupList.get(i).getName());
+        }
+        group.setTableModel(new MyTableModel(columnNames, data));
+        group.setVisible(true);
     }//GEN-LAST:event_handleOpenMenuItemClicked
 
     private void handleDeleteMenuClicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_handleDeleteMenuClicked
         // TODO add your handling code here:
-        GroupFrame frame = new GroupFrame();
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        frame.getButton().setText("Delete");
-        frame.setVisible(true);
+//        GroupFrame frame = new GroupFrame();
+//        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+//        frame.getButton().setText("Delete");
+        GroupDialog group = new GroupDialog(this, true);
+        String[] columnNames = {"Data Group Name", "Total number of genes"};
+        ArrayList<DataGroup> groupList = DataGroup.getAllGroups();
+        Object[][] data = new Object[groupList.size()][2];
+        for (int i = 0; i < groupList.size(); i ++) {
+            data[i][0] = groupList.get(i).getName();
+            data[i][1] = GeneSeq.getGeneNumByGroupName(groupList.get(i).getName());
+        }
+        group.setTableModel(new MyTableModel(columnNames, data));
+        group.setVisible(true);
+//        this.setTitle(group.getSelectedGroup());
     }//GEN-LAST:event_handleDeleteMenuClicked
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        // TODO add your handling code here:
+        System.out.println(selectedGroup);
+        DefaultMutableTreeNode root = (DefaultMutableTreeNode)seqTree.getModel().getRoot();
+//        if (root.getChildCount() != 0) {
+            String s = root.toString();
+            System.out.println(s);
+            if(selectedGroup == "root") {
+                selectedGroup = s;
+            }
+            if(selectedGroup != s) {
+                Controller.refreshTree(seqTree, selectedGroup);
+            }
+//        }
+    }//GEN-LAST:event_formWindowActivated
     /**
      * @param args the command line arguments
      */

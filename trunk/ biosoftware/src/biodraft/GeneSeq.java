@@ -105,6 +105,23 @@ public class GeneSeq {
         return genes;
     }
 
+    public static int getGeneNumByGroupName(String name) {
+        ArrayList<GeneSeq> genes = new ArrayList<GeneSeq>();
+        try{
+            String sql = "select * from GeneSeq where groupid = ?";
+            PreparedStatement ps = Main.con.prepareStatement(sql);
+            ps.setInt(1, DataGroup.getGroupIDByName(name));
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                genes.add(new GeneSeq(rs.getString("name"), rs.getString("sequence"), rs.getInt("groupid")));
+            }
+            rs.close();
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        return genes.size();
+    }
+
     public String getGeneName(){
         return name;
     }

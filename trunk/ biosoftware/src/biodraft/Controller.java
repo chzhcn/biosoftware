@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import javax.swing.JTree;
 import javax.swing.text.html.HTMLDocument.Iterator;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 /**
  *
@@ -74,17 +75,19 @@ public class Controller {
     public static void refreshTree(JTree seqTree, String groupName) {
         DefaultMutableTreeNode dataGroup = null;
         DefaultMutableTreeNode gene = null;
-        DefaultMutableTreeNode root = (DefaultMutableTreeNode)seqTree.getModel().getRoot();
+//        DefaultMutableTreeNode root = (DefaultMutableTreeNode)seqTree.getModel().getRoot();
         ArrayList<GeneSeq> genes = GeneSeq.getGenesByGroupID(DataGroup.getGroupIDByName(groupName));
 
         dataGroup = new DefaultMutableTreeNode(groupName);
-        root.add(dataGroup);
+//        root.add(dataGroup);
 
 //        int count = genes.size();
         for(GeneSeq g : genes ) {
             gene = new DefaultMutableTreeNode(g.getGeneName());
             dataGroup.add(gene);
         }
+        seqTree.setModel(new DefaultTreeModel(dataGroup));
+//        seqTree.setRootVisible(false);
         seqTree.setVisible(true);
     }
 }
