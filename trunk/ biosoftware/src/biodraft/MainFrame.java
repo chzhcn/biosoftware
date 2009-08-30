@@ -8,16 +8,20 @@
  *
  * Created on 2009-8-29, 16:22:29
  */
-
 package biodraft;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.*;
 import javax.swing.JFrame;
 
 
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
 /**
  *
  * @author Administrator
@@ -25,6 +29,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class MainFrame extends javax.swing.JFrame {
 
     public static Connection con;
+
     /** Creates new form MainFrame */
     public MainFrame() {
         initComponents();
@@ -40,6 +45,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         newDataGroupFileChooser = new javax.swing.JFileChooser();
+        newGroupNameOptionPane = new javax.swing.JOptionPane();
         frameSplitPane = new javax.swing.JSplitPane();
         topSplitPane = new javax.swing.JSplitPane();
         treeScrollPane = new javax.swing.JScrollPane();
@@ -97,7 +103,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
         seqTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
-        seqTree.setRootVisible(false);
         treeScrollPane.setViewportView(seqTree);
 
         topSplitPane.setLeftComponent(treeScrollPane);
@@ -151,7 +156,7 @@ public class MainFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(maxSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(editTogButton, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap(100, Short.MAX_VALUE))
+                .addContainerGap(225, Short.MAX_VALUE))
         );
         thresPanelLayout.setVerticalGroup(
             thresPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -195,15 +200,15 @@ public class MainFrame extends javax.swing.JFrame {
         priemrPanel.setLayout(priemrPanelLayout);
         priemrPanelLayout.setHorizontalGroup(
             priemrPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 733, Short.MAX_VALUE)
+            .addGap(0, 730, Short.MAX_VALUE)
             .addGroup(priemrPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(primerScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 733, Short.MAX_VALUE))
+                .addComponent(primerScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 730, Short.MAX_VALUE))
         );
         priemrPanelLayout.setVerticalGroup(
             priemrPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 32, Short.MAX_VALUE)
+            .addGap(0, 27, Short.MAX_VALUE)
             .addGroup(priemrPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(primerScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE))
+                .addComponent(primerScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout topRightPanelLayout = new javax.swing.GroupLayout(topRightPanel);
@@ -351,11 +356,11 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, typingPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(typingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(resultScrollPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
+                    .addComponent(resultScrollPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, typingPanelLayout.createSequentialGroup()
                         .addComponent(jLabel11)
                         .addGap(10, 10, 10)
-                        .addComponent(pathText, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE))
+                        .addComponent(pathText, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE))
                     .addGroup(typingPanelLayout.createSequentialGroup()
                         .addComponent(fileButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -374,7 +379,7 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(fileButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(resultScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(142, Short.MAX_VALUE))
+                .addContainerGap(109, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout bottomPanelLayout = new javax.swing.GroupLayout(bottomPanel);
@@ -465,16 +470,37 @@ public class MainFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Fasta files", "fasta");
         newDataGroupFileChooser.setFileFilter(filter);
+//        newDataGroupFileChooser.showDialog(null, null);
         int returnVal = newDataGroupFileChooser.showOpenDialog(null);
 //        int returnVal = newDataGroupFileChooser.showOpenDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = newDataGroupFileChooser.getSelectedFile();
+            String groupName = JOptionPane.showInputDialog("Please input the data group name");
+            int groupID;
+            try {
+                groupID = Controller.createNewDataGroup(file, groupName);
+//            if (null != groupName) {
+//            }
+            } catch (FileNotFoundException ex) {
+//                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                ex.getMessage();
+            } catch (SQLException ex) {
+                if(ex.getErrorCode() == 0x80004005) {
+
+                }
+            }
+
+            Controller.refreshTree(seqTree, groupName);
+//            if (null != groupName) {
+//            }
         }
 //        newDataGroupFileChooser.setVisible(true);
     }//GEN-LAST:event_newDataGroupMenuItemActionPerformed
 //=======
     private void handleEditButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_handleEditButtonStateChanged
         // TODO add your handling code here:
-        if(editTogButton.getText() == "Edit") {
+        if (editTogButton.getText() == "Edit") {
             editTogButton.setText("Finish");
         } else {
             editTogButton.setText("Edit");
@@ -498,7 +524,6 @@ public class MainFrame extends javax.swing.JFrame {
         frame.getButton().setText("Delete");
         frame.setVisible(true);
     }//GEN-LAST:event_handleDeleteMenuClicked
-
     /**
      * @param args the command line arguments
      */
@@ -546,6 +571,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem newDataBaseMenuItem;
     private javax.swing.JFileChooser newDataGroupFileChooser;
     private javax.swing.JMenuItem newDataGroupMenuItem;
+    private javax.swing.JOptionPane newGroupNameOptionPane;
     private javax.swing.JMenuItem openDataGroupMenuItem;
     private javax.swing.JSpinner pThreSpinner;
     private javax.swing.JFormattedTextField pathText;

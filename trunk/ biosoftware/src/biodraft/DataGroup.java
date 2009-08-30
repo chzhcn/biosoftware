@@ -68,6 +68,18 @@ public class DataGroup {
         return flag;
     }
 
+    //====>
+    public static int addGroupByName(String name) throws SQLException {
+        int groupID = -1;
+
+        String sql = "insert into DataGroup values(?, ?, ?, ?, ?)";
+        PreparedStatement ps = Main.con.prepareStatement(sql);
+        ps.setString(1, name);
+        ps.executeUpdate();
+        groupID = getGroupIDByName(name);
+        return groupID;
+    }
+
     public static boolean deleteGroupByName(String s) {
         boolean flag = false;
         try {
@@ -99,7 +111,6 @@ public class DataGroup {
 //        }
 //        return flag;
 //    }
-
     public static int getGroupIDByName(String s) {
         int id = -1;
         try {
@@ -107,7 +118,7 @@ public class DataGroup {
             PreparedStatement ps = Main.con.prepareStatement(sql);
             ps.setString(1, s);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 id = rs.getInt("rowid");
             }
             rs.close();
@@ -155,5 +166,4 @@ public class DataGroup {
         }
         return flag;
     }
-
 }
