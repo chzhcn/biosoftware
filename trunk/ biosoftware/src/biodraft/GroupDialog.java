@@ -11,6 +11,8 @@
 
 package biodraft;
 
+import javax.swing.JFrame;
+
 /**
  *
  * @author Administrator
@@ -18,9 +20,13 @@ package biodraft;
 public class GroupDialog extends javax.swing.JDialog {
 
 //    private String selectedGroup;
+//    private JFrame fParent;
+    private GroupSetable fGroupRequestor;
     /** Creates new form GroupDialog */
-    public GroupDialog(java.awt.Frame parent, boolean modal) {
+    public GroupDialog(JFrame parent, boolean modal, GroupSetable groupRequestor) {
         super(parent, modal);
+//        fParent = parent;
+        fGroupRequestor = groupRequestor;
         initComponents();
 //        selectedGroup = "";
     }
@@ -128,8 +134,9 @@ public class GroupDialog extends javax.swing.JDialog {
     private void handleOpenClicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_handleOpenClicked
         // TODO add your handling code here:
         int row = groupsTable.getSelectedRow();
-        MainFrame.selectedGroup = (groupsTable.getModel()).getValueAt(row, 0).toString();
-        System.out.println(MainFrame.selectedGroup);
+//        MainFrame.selectedGroup = (groupsTable.getModel()).getValueAt(row, 0).toString();
+        fGroupRequestor.setGroup((groupsTable.getModel()).getValueAt(row, 0).toString());
+//        System.out.println(MainFrame.selectedGroup);
         this.dispose();
     }//GEN-LAST:event_handleOpenClicked
 
