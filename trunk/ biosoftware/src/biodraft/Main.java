@@ -40,7 +40,8 @@ public class Main {
 //        DataGroup.setGroupName("testGroup", "testGroup2");
 //        DataGroup.deleteGroupByID(3);
 //        DataGroup.getAllGroups();
-        DataGroup.getGroupIDByName("testGroup");
+//        DataGroup.getGroupIDByName("testGroup");
+//        GeneSeq.deleteGenesByGroupID(10);
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

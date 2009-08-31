@@ -11,6 +11,7 @@
 
 package biodraft;
 
+import java.awt.Color;
 import javax.swing.JFrame;
 
 /**
@@ -21,12 +22,12 @@ public class GroupDialog extends javax.swing.JDialog {
 
 //    private String selectedGroup;
 //    private JFrame fParent;
-    private GroupSetable fGroupRequestor;
+    private FrameSetable frameRequestor;
     /** Creates new form GroupDialog */
-    public GroupDialog(JFrame parent, boolean modal, GroupSetable groupRequestor) {
+    public GroupDialog(JFrame parent, boolean modal, FrameSetable frameRequestor) {
         super(parent, modal);
 //        fParent = parent;
-        fGroupRequestor = groupRequestor;
+        this.frameRequestor = frameRequestor;
         initComponents();
 //        selectedGroup = "";
     }
@@ -47,6 +48,7 @@ public class GroupDialog extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         groupsTable = new javax.swing.JTable();
+        messageLable = new javax.swing.JLabel();
         cancelButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
         openButton = new javax.swing.JButton();
@@ -67,28 +69,49 @@ public class GroupDialog extends javax.swing.JDialog {
             }
         ));
         groupsTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        groupsTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                groupsTableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(groupsTable);
+
+        messageLable.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        messageLable.setForeground(new java.awt.Color(255, 0, 0));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
+                    .addComponent(messageLable, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 529, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 512, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(messageLable, javax.swing.GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE))
         );
 
         cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
 
         deleteButton.setText("Delete");
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteButtonActionPerformed(evt);
+            }
+        });
 
         openButton.setText("Open");
         openButton.addActionListener(new java.awt.event.ActionListener() {
@@ -101,7 +124,6 @@ public class GroupDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 555, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -114,7 +136,6 @@ public class GroupDialog extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 598, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -133,12 +154,63 @@ public class GroupDialog extends javax.swing.JDialog {
 
     private void handleOpenClicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_handleOpenClicked
         // TODO add your handling code here:
-        int row = groupsTable.getSelectedRow();
+        int row;
+        if ((row = groupsTable.getSelectedRow()) != -1) {
+
 //        MainFrame.selectedGroup = (groupsTable.getModel()).getValueAt(row, 0).toString();
-        fGroupRequestor.setGroup((groupsTable.getModel()).getValueAt(row, 0).toString());
+            frameRequestor.setGroup((groupsTable.getModel()).getValueAt(row, 0).toString());
 //        System.out.println(MainFrame.selectedGroup);
-        this.dispose();
+            this.dispose();
+        } else {
+            messageLable.setText("Warning : Please select a group first");
+        }
     }//GEN-LAST:event_handleOpenClicked
+
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+        // TODO add your handling code here:
+        int row;
+        if ((row = groupsTable.getSelectedRow()) != -1) {
+            String selectedGroup = (groupsTable.getModel()).getValueAt(row, 0).toString();
+            int id = DataGroup.getGroupIDByName(selectedGroup);
+            if(PrimerPair.deletePrimerPairsByGroupID(id) && GeneSeq.deleteGenesByGroupID(id)) {
+                if (DataGroup.deleteGroupByName(selectedGroup)) {
+                    messageLable.setForeground(Color.black);
+                    messageLable.setText("Deletion succeed");
+                    Controller.populateGroupTable(this);
+                    frameRequestor.refreshFrame(selectedGroup);
+                }else {
+                    messageLable.setText("Error : Deletion failed");
+                }
+            }else {
+                messageLable.setText("Error : Deletion failed");
+            }
+//            if (DataGroup.deleteGroupByName(selectedGroup)) {
+//                System.out.println(id);
+//                if (GeneSeq.deleteGenesByGroupID(id)) {
+//                    messageLable.setForeground(Color.black);
+//                    messageLable.setText("Deletion succeed");
+//                } else {
+//                    messageLable.setText("Error : Deletion failed");
+//                }
+//            } else {
+//                messageLable.setText("Error : Deletion failed");
+//            }
+//        System.out.println(MainFrame.selectedGroup);
+//            this.dispose();
+        } else {
+            messageLable.setText("Warning : Please select a group first");
+        }
+    }//GEN-LAST:event_deleteButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void groupsTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_groupsTableMouseClicked
+        // TODO add your handling code here:
+        messageLable.setText("");
+    }//GEN-LAST:event_groupsTableMouseClicked
 
     public void setTableModel(MyTableModel model) {
         this.groupsTable.setModel(model);
@@ -166,6 +238,7 @@ public class GroupDialog extends javax.swing.JDialog {
     private javax.swing.JTable groupsTable;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel messageLable;
     private javax.swing.JButton openButton;
     // End of variables declaration//GEN-END:variables
 

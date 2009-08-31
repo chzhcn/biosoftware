@@ -22,8 +22,28 @@ public class PrimerPair {
         this.groupID = groupID;
     }
 
+    public int getForEnd() {
+        return forEnd;
+    }
+
+    public int getForStart() {
+        return forStart;
+    }
+
+    public int getRevEnd() {
+        return revEnd;
+    }
+
+    public int getRevStart() {
+        return revStart;
+    }
+
+    public double getScore() {
+        return score;
+    }
+
     public static ArrayList<PrimerPair> getPrimerPairsByGroupID(int groupID) {
-        String sql = "select * from PrimerPair where groupid = ? order by score dec;";
+        String sql = "select * from PrimerPair where groupid = ?";
         ArrayList<PrimerPair> primerPairs = new ArrayList<PrimerPair>();
         try {
             PreparedStatement ps = Main.con.prepareStatement(sql);
@@ -43,6 +63,20 @@ public class PrimerPair {
 
     public static void AddPrimerPairs() {
 
+    }
+
+    public static boolean deletePrimerPairsByGroupID(int id) {
+        boolean flag = false;
+        try{
+            String sql = "delete from PrimerPair where groupid = ?";
+            PreparedStatement ps = Main.con.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            flag = true;
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        return flag;
     }
 
 }

@@ -9,6 +9,7 @@ package biodraft;
  *
  * @author Owner
  */
-public interface GroupSetable {
+public interface FrameSetable {
     void setGroup(String name);
+    void refreshFrame (String name);
 }
