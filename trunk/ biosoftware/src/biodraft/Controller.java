@@ -5,17 +5,19 @@
 package biodraft;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTree;
-import javax.swing.text.html.HTMLDocument.Iterator;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -25,7 +27,82 @@ import javax.swing.tree.DefaultTreeModel;
  */
 public class Controller {
 
-    public static int createNewDataGroup(File file, String groupName) throws FileNotFoundException, IOException, SQLException {
+    public static void clutalw(File file, int groupID) throws SQLException {
+        String para1 = "1\n" + file.getAbsolutePath() + "\n2\n1\n\n\nX\n\nX\n";
+        String command2;
+//            command1 = "cat /home/chzhcn/Desktop/clustalw/clustalw-2.0.10-linux-i386-libcppstatic/testpipe";
+//            command2 = " /home/chzhcn/Desktop/clustalw/clustalw-2.0.10-linux-i386-libcppstatic/clustalw2";
+//        command1 = "cat " + System.getProperty("user.dir") + "/testpipe";
+        command2 = System.getProperty("user.dir") + "\\clustalw2.exe";
+//            command = "ls -a -l";
+        Runtime rt = Runtime.getRuntime();
+//        Process p1, p2;
+        Process p2;
+//            PipedInputStream pIn = new PipedInputStream();
+//            PipedOutputStream pOut = new PipedOutputStream();
+//            try {
+//                  pIn.connect(pOut);
+//            } catch (IOException ex) {
+//                  Logger.getLogger(TestPipe.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+
+        try {
+//            p1 = rt.exec(command1);
+            p2 = rt.exec(command2);
+
+//            BufferedReader br = new BufferedReader(new InputStreamReader(p1.getInputStream()));
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(p2.getOutputStream()));
+            BufferedReader b = new BufferedReader(new InputStreamReader(p2.getInputStream()));
+
+
+//                  String l;
+//                  while ((l = br.readLine()) != null) {
+//                        System.out.println(l);
+////                        System.out.println("1");
+//                        bw.write(l);
+//
+//                  }
+//            int c;
+            char[] cat = para1.toCharArray();
+
+            for (int i = 0; i < cat.length; i++) {
+                bw.write(cat[i]);
+//                System.out.print(cat[i]);
+            }
+//            while ((c = br.read()) != -1) {
+////                        bw.
+////                        bw.append((char)c);
+//                bw.write((char) c);
+////                        System.out.print((char)c);
+//            }
+//            br.close();
+//                  bw.close();
+//                  bw.flush();
+            bw.close();
+//                  System.out.println("s");
+//            String r;
+//            while ((r = b.readLine()) != null) {
+//                System.out.println(r);
+//
+//            }
+
+            String aln = file.getPath().substring(0, file.getPath().indexOf(".")) + ".aln";
+//            BufferedReader data = new BufferedReader(new FileReader(aln));
+//            new BufferedReader(new FileReader(file));
+//            StringBuffer temp = new StringBuffer(8000);
+//            for (String s = data.readLine(); null != s; s = data.readLine()) {
+//                temp.append(s);
+//            }
+            DataGroup.addALNByGroupID(aln, groupID);
+//                  System.out.println("d");
+
+//                  p2.getOutputStream();
+            } catch (IOException iOException) {
+            iOException.printStackTrace();
+        }
+    }
+
+    public static int createNewDataGroup(File file, String groupName, JTree seqTree) throws FileNotFoundException, IOException, SQLException {
         BufferedReader br = null;
 
         if (file.canRead()) {
@@ -58,19 +135,21 @@ public class Controller {
                         name = s.substring(1);
 
                     } else {
-                        if(null != name) {
+                        if (null != name) {
                             temp.append(s);
-                        }else {
+                        } else {
                             throw new IOException("Unexpected char before >");
                         }
                     }
                 }
             }
 
-            if(null != name) {
+            if (null != name) {
                 GeneSeq.addGene(new GeneSeq(name, temp.toString(), groupID));
             }
         }
+        refreshTree(seqTree, groupName);
+        clutalw(file, groupID);
         return groupID;
 
     }
@@ -85,7 +164,7 @@ public class Controller {
 //        root.add(dataGroup);
 
 //        int count = genes.size();
-        for(GeneSeq g : genes ) {
+        for (GeneSeq g : genes) {
             gene = new DefaultMutableTreeNode(g.getGeneName());
             dataGroup.add(gene);
         }

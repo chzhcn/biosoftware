@@ -4,6 +4,11 @@
  */
 package biodraft;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -48,11 +53,56 @@ public class DataGroup {
         return name;
     }
 
+    //======>
+    public static byte[] getALNbyGroupID(int groupID) throws SQLException {
+        byte[] data = null;
+//        InputStream inStream = null;
+//        throw new UnsupportedOperationException("Not yet implemented");
+//        String aln = null;
+        String sql = "select aln from DataGroup where rowid = ?";
+        PreparedStatement ps = Main.con.prepareStatement(sql);
+        ps.setInt(1, groupID);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            data = rs.getBytes("aln");
+        }
+        rs.close();
+        return data;
+    }
+
+    public static void addALNByGroupID(String path, int groupID) throws SQLException, FileNotFoundException, IOException {
+        File file = new File(path);
+        byte[] data = new byte[(int) file.length()];
+        FileInputStream fileInputStream = new FileInputStream(file);
+        fileInputStream.read(data);
+        String sql = "update DataGroup set aln = ? where rowid = ?";
+        PreparedStatement ps = Main.con.prepareStatement(sql);
+//        InputStream alnStream = new FileInputStream(path);
+//        ps.setBlob(1, alnStream);
+        ps.setBytes(1, data);
+//        ps.setBinaryStream(1, alnStream, file.length());
+        ps.setInt(2, groupID);
+        ps.executeUpdate();
+        ps.close();
+    }
+
+    //====>
+    public static int addGroupByName(String name) throws SQLException {
+        int groupID = -1;
+
+        String sql = "insert into DataGroup values(?, ?, ?, ?, ?, ?)";
+        PreparedStatement ps = Main.con.prepareStatement(sql);
+        ps.setString(1, name);
+        ps.executeUpdate();
+        groupID = getGroupIDByName(name);
+        return groupID;
+    }
+
     public static boolean addGroup(DataGroup group) {
         boolean flag = false;
         try {
 //            Connection con = DriverManager.getConnection("jdbc:sqlite:BioData.db");
-            String sql = "insert into DataGroup values(?, ?, ?, ?, ?)";
+            String sql = "insert into DataGroup values(?, ?, ?, ?, ?, ?)";
             PreparedStatement ps = Main.con.prepareStatement(sql);
             ps.setString(1, group.getName());
             ps.setInt(2, group.getLowPrimerLength());
@@ -66,18 +116,6 @@ public class DataGroup {
             ex.printStackTrace();
         }
         return flag;
-    }
-
-    //====>
-    public static int addGroupByName(String name) throws SQLException {
-        int groupID = -1;
-
-        String sql = "insert into DataGroup values(?, ?, ?, ?, ?)";
-        PreparedStatement ps = Main.con.prepareStatement(sql);
-        ps.setString(1, name);
-        ps.executeUpdate();
-        groupID = getGroupIDByName(name);
-        return groupID;
     }
 
     public static boolean deleteGroupByName(String s) {
@@ -128,7 +166,7 @@ public class DataGroup {
         return id;
     }
 
-    public static DataGroup getGroupByName( String name) {
+    public static DataGroup getGroupByName(String name) {
         DataGroup group = null;
         try {
             String sql = "select * from DataGroup where name = ?";
