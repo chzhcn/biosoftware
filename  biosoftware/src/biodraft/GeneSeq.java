@@ -105,6 +105,20 @@ public class GeneSeq {
         return genes;
     }
 
+    public static boolean deleteGenesByGroupID(int id) {
+        boolean flag = false;
+        try{
+            String sql = "delete from GeneSeq where groupid = ?";
+            PreparedStatement ps = Main.con.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            flag = true;
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        return flag;
+    }
+
     public static int getGeneNumByGroupName(String name) {
         ArrayList<GeneSeq> genes = new ArrayList<GeneSeq>();
         try{

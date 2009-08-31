@@ -23,12 +23,14 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
 
 /**
  *
  * @author Administrator
  */
-public class MainFrame extends javax.swing.JFrame implements GroupSetable{
+public class MainFrame extends javax.swing.JFrame implements FrameSetable{
 
 //    public static Connection con;
 //    public static String selectedGroup = "root";
@@ -49,6 +51,7 @@ public class MainFrame extends javax.swing.JFrame implements GroupSetable{
 
         newDataGroupFileChooser = new javax.swing.JFileChooser();
         newGroupNameOptionPane = new javax.swing.JOptionPane();
+        expDataFileChooser = new javax.swing.JFileChooser();
         frameSplitPane = new javax.swing.JSplitPane();
         topSplitPane = new javax.swing.JSplitPane();
         treeScrollPane = new javax.swing.JScrollPane();
@@ -64,6 +67,7 @@ public class MainFrame extends javax.swing.JFrame implements GroupSetable{
         jLabel4 = new javax.swing.JLabel();
         maxSpinner = new javax.swing.JSpinner();
         editTogButton = new javax.swing.JToggleButton();
+        resetButton = new javax.swing.JButton();
         priemrPanel = new javax.swing.JPanel();
         primerScrollPane = new javax.swing.JScrollPane();
         primerTable = new javax.swing.JTable();
@@ -137,6 +141,13 @@ public class MainFrame extends javax.swing.JFrame implements GroupSetable{
             }
         });
 
+        resetButton.setText("Reset");
+        resetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout thresPanelLayout = new javax.swing.GroupLayout(thresPanel);
         thresPanel.setLayout(thresPanelLayout);
         thresPanelLayout.setHorizontalGroup(
@@ -150,17 +161,21 @@ public class MainFrame extends javax.swing.JFrame implements GroupSetable{
                 .addGroup(thresPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(fThreSpinner)
                     .addComponent(pThreSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE))
-                .addGap(39, 39, 39)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(thresPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, thresPanelLayout.createSequentialGroup()
+                .addGroup(thresPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, thresPanelLayout.createSequentialGroup()
+                        .addGap(39, 39, 39)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(minSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(maxSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(editTogButton, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addGroup(thresPanelLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(resetButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(editTogButton)))
                 .addContainerGap(156, Short.MAX_VALUE))
         );
         thresPanelLayout.setVerticalGroup(
@@ -179,10 +194,12 @@ public class MainFrame extends javax.swing.JFrame implements GroupSetable{
                         .addGroup(thresPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(fThreSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2))
-                        .addContainerGap(24, Short.MAX_VALUE))
+                        .addContainerGap(20, Short.MAX_VALUE))
                     .addGroup(thresPanelLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(editTogButton)
+                        .addGroup(thresPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(editTogButton)
+                            .addComponent(resetButton))
                         .addContainerGap())))
         );
 
@@ -211,9 +228,9 @@ public class MainFrame extends javax.swing.JFrame implements GroupSetable{
         );
         priemrPanelLayout.setVerticalGroup(
             priemrPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 27, Short.MAX_VALUE)
+            .addGap(0, 39, Short.MAX_VALUE)
             .addGroup(priemrPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(primerScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE))
+                .addComponent(primerScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout topRightPanelLayout = new javax.swing.GroupLayout(topRightPanel);
@@ -232,7 +249,7 @@ public class MainFrame extends javax.swing.JFrame implements GroupSetable{
             .addGroup(topRightPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(thresPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(priemrPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -352,6 +369,11 @@ public class MainFrame extends javax.swing.JFrame implements GroupSetable{
         pathText.setText("C://");
 
         fileButton.setText("Open File");
+        fileButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fileButtonActionPerformed(evt);
+            }
+        });
 
         typeButton.setText("Start Typing");
 
@@ -477,7 +499,7 @@ public class MainFrame extends javax.swing.JFrame implements GroupSetable{
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(frameSplitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)
+                .addComponent(frameSplitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 514, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -527,7 +549,7 @@ public class MainFrame extends javax.swing.JFrame implements GroupSetable{
 //        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 //        frame.getButton().setText("Open");
         GroupDialog group = new GroupDialog(this, true, this);
-        populateGroupTable(group);
+        Controller.populateGroupTable(group);
         group.setVisible(true);
     }//GEN-LAST:event_handleOpenMenuItemClicked
 
@@ -537,25 +559,19 @@ public class MainFrame extends javax.swing.JFrame implements GroupSetable{
 //        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 //        frame.getButton().setText("Delete");
          GroupDialog group = new GroupDialog(this, true, this);
-         populateGroupTable(group);
+         Controller.populateGroupTable(group);
          group.setVisible(true);
 //        this.setTitle(group.getSelectedGroup());
     }//GEN-LAST:event_handleDeleteMenuClicked
 
     private void editTogButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editTogButtonActionPerformed
         // TODO add your handling code here:
-        if (editTogButton.getText() == "Edit") {
+        if (editTogButton.getText().equals("Edit")) {
             editTogButton.setText("Finish");
-            pThreSpinner.setEnabled(true);
-            fThreSpinner.setEnabled(true);
-            maxSpinner.setEnabled(true);
-            minSpinner.setEnabled(true);
+            setThresholdEnabled(true);
         } else {
             editTogButton.setText("Edit");
-            pThreSpinner.setEnabled(false);
-            fThreSpinner.setEnabled(false);
-            maxSpinner.setEnabled(false);
-            minSpinner.setEnabled(false);
+            setThresholdEnabled(false);
             //check the thresholds and search for primer
         }
     }//GEN-LAST:event_editTogButtonActionPerformed
@@ -563,43 +579,104 @@ public class MainFrame extends javax.swing.JFrame implements GroupSetable{
     private void customizedRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customizedRadioButtonActionPerformed
         // TODO add your handling code here:
         if (forStartSpinner.isEnabled() == true) {
-            forStartSpinner.setEnabled(false);
-            forEndSpinner.setEnabled(false);
-            revStartSpinner.setEnabled(false);
-            revEndSpinner.setEnabled(false);
+            setPrimerEnabled(false);
         } else {
-            forStartSpinner.setEnabled(true);
-            forEndSpinner.setEnabled(true);
-            revStartSpinner.setEnabled(true);
-            revEndSpinner.setEnabled(true);
+            setPrimerEnabled(true);
         }
     }//GEN-LAST:event_customizedRadioButtonActionPerformed
 
-    public void populateGroupTable( GroupDialog group) {
-        String[] columnNames = {"Data Group Name", "Total number of genes"};
-        ArrayList<DataGroup> groupList = DataGroup.getAllGroups();
-        Object[][] data = new Object[groupList.size()][2];
-        for (int i = 0; i < groupList.size(); i ++) {
-            data[i][0] = groupList.get(i).getName();
-            data[i][1] = GeneSeq.getGeneNumByGroupName(groupList.get(i).getName());
+    private void fileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileButtonActionPerformed
+        // TODO add your handling code here:
+         FileNameExtensionFilter filter = new FileNameExtensionFilter("Text files", "txt");
+         expDataFileChooser.setFileFilter(filter);
+         int returnVal = expDataFileChooser.showOpenDialog(null);
+         if (returnVal == JFileChooser.APPROVE_OPTION) {
+             pathText.setText(expDataFileChooser.getSelectedFile().getPath());
+         }
+    }//GEN-LAST:event_fileButtonActionPerformed
+
+    private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
+        // TODO add your handling code here:
+        if (seqTree.getModel().getChildCount(seqTree.getModel().getRoot()) != 0) {
+            resetThreshold(seqTree.getModel().getRoot().toString());
+        } else {
+            resetThreshold();
         }
-        group.setTableModel(new MyTableModel(columnNames, data));
-    }
+    }//GEN-LAST:event_resetButtonActionPerformed
+
+   
 
     public void setGroup(String name) {
        DefaultMutableTreeNode root = (DefaultMutableTreeNode)seqTree.getModel().getRoot();
        String rootName = root.toString();
-       if(name != rootName) {
+       if(!name.equals(rootName)) {
            Controller.refreshTree(seqTree, name);
            editTogButton.setEnabled(true);
+           editTogButton.setText("Edit");
            customizedRadioButton.setEnabled(true);
-           DataGroup datagroup = DataGroup.getGroupByName(name);
-           pThreSpinner.setValue(datagroup.getLowPrimerLength());
-           fThreSpinner.setValue(datagroup.getLowFilterLength());
-           maxSpinner.setValue(datagroup.getHighVariableRegionLength());
-           minSpinner.setValue(datagroup.getLowVariableRegionLength());
+           customizedRadioButton.setSelected(false);
+           setPrimerEnabled(false);
+           setThresholdEnabled(false);
+           resetThreshold(name);
+           resetPrimer();
+           ArrayList<PrimerPair> primerList = PrimerPair.getPrimerPairsByGroupID(DataGroup.getGroupIDByName(name));
+           primerTable.setModel(Controller.pupolatePrimerTable(primerList));
        }
    }
+
+    public void refreshFrame (String name) {
+       DefaultMutableTreeNode root = (DefaultMutableTreeNode)seqTree.getModel().getRoot();
+       String rootName = root.toString();
+       if(name.equals(rootName)) {
+           root = new DefaultMutableTreeNode();
+           seqTree.setModel(new DefaultTreeModel(root));
+           seqTree.setRootVisible(false);
+           editTogButton.setEnabled(false);
+           editTogButton.setText("Edit");
+           customizedRadioButton.setEnabled(false);
+           customizedRadioButton.setSelected(false);
+           setPrimerEnabled(false);
+           setThresholdEnabled(false);
+           resetThreshold();
+           resetPrimer();
+       }
+    }
+
+    public void setThresholdEnabled(boolean flag){
+        pThreSpinner.setEnabled(flag);
+        fThreSpinner.setEnabled(flag);
+        maxSpinner.setEnabled(flag);
+        minSpinner.setEnabled(flag);
+    }
+
+    public void resetThreshold (String name){
+        DataGroup datagroup = DataGroup.getGroupByName(name);
+        pThreSpinner.setValue(datagroup.getLowPrimerLength());
+        fThreSpinner.setValue(datagroup.getLowFilterLength());
+        maxSpinner.setValue(datagroup.getHighVariableRegionLength());
+        minSpinner.setValue(datagroup.getLowVariableRegionLength());
+    }
+
+    public void resetThreshold(){
+        pThreSpinner.setValue(0);
+        fThreSpinner.setValue(0);
+        maxSpinner.setValue(0);
+        minSpinner.setValue(0);
+    }
+
+    public void setPrimerEnabled(boolean flag) {
+        forStartSpinner.setEnabled(flag);
+        forEndSpinner.setEnabled(flag);
+        revStartSpinner.setEnabled(flag);
+        revEndSpinner.setEnabled(flag);
+    }
+
+    public void resetPrimer() {
+        forStartSpinner.setValue(0);
+        forEndSpinner.setValue(0);
+        revStartSpinner.setValue(0);
+       revEndSpinner.setValue(0);
+    }
     /**
      * @param args the command line arguments
      */
@@ -622,6 +699,7 @@ public class MainFrame extends javax.swing.JFrame implements GroupSetable{
     private javax.swing.JRadioButton customizedRadioButton;
     private javax.swing.JMenuItem deleteDataGroupMenuItem;
     private javax.swing.JToggleButton editTogButton;
+    private javax.swing.JFileChooser expDataFileChooser;
     private javax.swing.JSpinner fThreSpinner;
     private javax.swing.JButton fileButton;
     private javax.swing.JMenu fileMenu;
@@ -654,6 +732,7 @@ public class MainFrame extends javax.swing.JFrame implements GroupSetable{
     private javax.swing.JPanel priemrPanel;
     private javax.swing.JScrollPane primerScrollPane;
     private javax.swing.JTable primerTable;
+    private javax.swing.JButton resetButton;
     private javax.swing.JScrollPane resultScrollPane;
     private javax.swing.JTable resultTable;
     private javax.swing.JSpinner revEndSpinner;

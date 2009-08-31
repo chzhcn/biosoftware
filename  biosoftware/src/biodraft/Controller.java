@@ -11,6 +11,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JTree;
 import javax.swing.text.html.HTMLDocument.Iterator;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -90,4 +93,79 @@ public class Controller {
         seqTree.setRootVisible(true);
         seqTree.setVisible(true);
     }
+
+    public static void startTyping (File dataFile) {
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(dataFile));
+            ArrayList<Double> expMassList = new ArrayList<Double>();
+            String aMass = "";
+            while ((aMass = in.readLine()) != null) {
+                expMassList.add(Double.parseDouble(aMass));
+            }
+            for (int j = 0; j < expMassList.size(); j++) {
+                System.out.println(expMassList.get(j));
+            }
+            System.out.println(expMassList.size());
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            makeNoise(expMassList);
+            for (int j = 0; j < expMassList.size(); j++) {
+                System.out.println(expMassList.get(j));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void makeNoise(ArrayList<Double> data) {
+        int changeNum = (int) (Math.random() * 15);
+        for (int i = 0; i < changeNum; i++) {
+            Random location = new Random();
+            int num = location.nextInt(data.size());
+            Random choice = new Random();
+            switch(choice.nextInt(3)) {
+                case 0://add some mass
+                    data.set(num, (data.get(num)+Math.random()*100));
+                    break;
+                case 1://reduce some mass
+                    data.set(num, (data.get(num)-Math.random()*100));
+                    if(data.get(num) <= 0 ) {
+                        data.remove(num);
+                    }
+                    break;
+                case 2://delete
+                    data.remove(num);
+            }
+        }
+    }
+
+     public static void populateGroupTable( GroupDialog group) {
+        String[] columnNames = {"Data Group Name", "Total number of genes"};
+        ArrayList<DataGroup> groupList = DataGroup.getAllGroups();
+        Object[][] data = new Object[groupList.size()][2];
+        for (int i = 0; i < groupList.size(); i ++) {
+            data[i][0] = groupList.get(i).getName();
+            data[i][1] = GeneSeq.getGeneNumByGroupName(groupList.get(i).getName());
+        }
+        group.setTableModel(new MyTableModel(columnNames, data));
+    }
+
+    public static MyTableModel pupolatePrimerTable (ArrayList<PrimerPair> primerPairs) {
+        String[] columnNames = {"Forward Primer Start","Forward Primer End",
+        "Reverse Primer Start","Reverse Primer End","Score"};
+        Object[][] data = new Object[primerPairs.size()][5];
+        PrimerPair primerpair;
+        for (int i = 0; i < primerPairs.size(); i ++) {
+            primerpair = primerPairs.get(i);
+            data[i][0] = primerpair.getForStart();
+            data[i][1] = primerpair.getForEnd();
+            data[i][2] = primerpair.getRevStart();
+            data[i][3] = primerpair.getRevEnd();
+            data[i][4] = primerpair.getScore();
+        }
+        return (new MyTableModel(columnNames, data));
+    }
 }
+
