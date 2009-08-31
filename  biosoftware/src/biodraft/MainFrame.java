@@ -10,12 +10,16 @@
  */
 package biodraft;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
-import javax.swing.JFrame;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
@@ -34,7 +38,6 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
 
 //    public static Connection con;
 //    public static String selectedGroup = "root";
-
     /** Creates new form MainFrame */
     public MainFrame() {
         initComponents();
@@ -121,16 +124,20 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
 
         jLabel2.setText("Min-Length of Fragment");
 
+        pThreSpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
         pThreSpinner.setEnabled(false);
 
+        fThreSpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
         fThreSpinner.setEnabled(false);
 
         jLabel3.setText("Length Between Primers  Min");
 
+        minSpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
         minSpinner.setEnabled(false);
 
         jLabel4.setText("Max");
 
+        maxSpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
         maxSpinner.setEnabled(false);
 
         editTogButton.setText("Edit");
@@ -207,13 +214,10 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
 
         primerTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6", "Title 7"
             }
         ));
         primerScrollPane.setViewportView(primerTable);
@@ -516,10 +520,13 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
 //        int returnVal = newDataGroupFileChooser.showOpenDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = newDataGroupFileChooser.getSelectedFile();
-            String groupName = JOptionPane.showInputDialog("Please input the data group name");
+            String groupName = "";
             int groupID;
+            while (groupName == "") {
+                groupName = JOptionPane.showInputDialog("Please input the data group name");
+            }
             try {
-                groupID = Controller.createNewDataGroup(file, groupName);
+                groupID = Controller.createNewDataGroup(file, groupName, seqTree);
 //            if (null != groupName) {
 //            }
             } catch (FileNotFoundException ex) {
@@ -527,12 +534,12 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
             } catch (IOException ex) {
                 ex.getMessage();
             } catch (SQLException ex) {
-                if(ex.getErrorCode() == 0x80004005) {
-
+                ex.printStackTrace();
+                if (ex.getErrorCode() == 0x80004005) {
                 }
             }
 
-            Controller.refreshTree(seqTree, groupName);
+//            Controller.refreshTree(seqTree, groupName);
             editTogButton.setEnabled(true);
             customizedRadioButton.setEnabled(true);
 //            if (null != groupName) {
@@ -573,6 +580,42 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
             editTogButton.setText("Edit");
             setThresholdEnabled(false);
             //check the thresholds and search for primer
+            int lpth = Integer.parseInt(pThreSpinner.getValue().toString());
+            int lfth = Integer.parseInt(fThreSpinner.getValue().toString());
+            int lvth = Integer.parseInt(minSpinner.getValue().toString());
+            int hvth = Integer.parseInt(maxSpinner.getValue().toString());
+            String groupName = seqTree.getModel().getRoot().toString();
+            try {
+                if (lpth == 0 || lfth == 0 || lvth == 0 || hvth == 0) {
+                    throw new Exception("must != 0");
+                }
+                if (lvth >= hvth) {
+                    throw new Exception("lvth >= hvth");
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+            int groupID = DataGroup.getGroupIDByName(groupName);
+            int numOfSeqs = GeneSeq.getGeneNumByGroupName(groupName);
+//            String aln;
+            InputStream inStream = null;
+            try {
+                byte[] data = DataGroup.getALNbyGroupID(groupID);
+//                String s = new String(data);
+//                System.out.println(s);
+//                FileOutputStream fos = new FileOutputStream("x.aln");
+//                fos.write(data);
+//                fos.close();
+                inStream = new ByteArrayInputStream(data);
+//                String aln = new String(data);
+//                System.out.println(aln);
+            } catch (SQLException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } 
+            MSTT mstt = new MSTT(numOfSeqs, lpth, lvth, hvth, lfth, inStream);
+            mstt.run();
+
+
         }
     }//GEN-LAST:event_editTogButtonActionPerformed
 
