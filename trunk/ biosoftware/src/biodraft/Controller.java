@@ -31,7 +31,7 @@ public class Controller {
     int groupID = -1;
     private final String[] primerTableNames = {"Forward Primer\nStart",
         "Forward Primer\nEnd", "Forward Primer\nSequence", "Reverse Primer\nStart",
-        "Reverse Primer\nEnd", "Reverse Primer\nSequence","Score"};
+        "Reverse Primer\nEnd", "Reverse Primer\nSequence", "Score"};
 //    private final Object[][] emptyprimerTableData = new Object[5][5];
 
     public String[] getPrimerTableNames() {
@@ -41,7 +41,6 @@ public class Controller {
 //    public Object[][] getEmptyprimerTableData() {
 //        return emptyprimerTableData;
 //    }
-
     public int getGroupID() {
         return groupID;
     }
@@ -175,17 +174,17 @@ public class Controller {
             primerpair = primerPairs.get(i);
             data[i][0] = primerpair.getForStart();
             data[i][1] = primerpair.getForEnd();
-            data[i][2] = getPrimerSeq(primerpair.getForStart(),  primerpair.getForEnd(), groupID);
+            data[i][2] = getPrimerSeq(primerpair.getForStart(), primerpair.getForEnd(), groupID);
             data[i][3] = primerpair.getRevStart();
             data[i][4] = primerpair.getRevEnd();
-            data[i][5] = getPrimerSeq(primerpair.getRevStart(),  primerpair.getRevEnd(), groupID);
+            data[i][5] = getPrimerSeq(primerpair.getRevStart(), primerpair.getRevEnd(), groupID);
             data[i][6] = primerpair.getScore();
         }
         return (new MyTableModel(primerTableNames, data));
     }
 
-    private String getPrimerSeq(int start, int end, int groupid) throws SQLException {
-        String primer = GeneSeq.getSeqsByGroupID(groupid).get(0).substring(start, end+1);
+    public String getPrimerSeq(int start, int end, int groupid) throws SQLException {
+        String primer = GeneSeq.getSeqsByGroupID(groupid).get(0).substring(start, end + 1);
         return primer;
     }
 
@@ -217,7 +216,6 @@ public class Controller {
 //            }
 //        }
 //    }
-
 //    public void startTyping(File dataFile) {
 //        try {
 //            BufferedReader in = new BufferedReader(new FileReader(dataFile));
@@ -318,7 +316,7 @@ public class Controller {
         return coincidence;
     }
 
-        public static ArrayList<Double> getExpMassList (File dataFile) {
+    public ArrayList<Double> getExpMassList(File dataFile) {
         ArrayList<Double> expMassList = new ArrayList<Double>();
         try {
             BufferedReader in = new BufferedReader(new FileReader(dataFile));
@@ -334,7 +332,7 @@ public class Controller {
             System.out.println();
             System.out.println();
             System.out.println();
-//            makeNoise(expMassList);//加噪音
+//            makeNoise(expMassList);//加噪�?
             for (int j = 0; j < expMassList.size(); j++) {
                 System.out.println(expMassList.get(j));
             }
@@ -342,5 +340,6 @@ public class Controller {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
         return expMassList;
+
     }
 }
