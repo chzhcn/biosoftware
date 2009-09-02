@@ -10,11 +10,9 @@
  */
 package biodraft;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -36,6 +34,8 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
     public MainFrame() {
         initComponents();
         controller = Controller.getInstance();
+        primerTable.setModel(new MyTableModel(controller.getPrimerTableNames()));
+        controller.modifyTableHeader(primerTable);
     }
 
     /** This method is called from within the constructor to
@@ -293,6 +293,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         revPrimerText.setText("AGCTTTTTT");
 
         customizedCheckBox.setText("Use Customized Primer");
+        customizedCheckBox.setEnabled(false);
 
         javax.swing.GroupLayout selectPrimerPanelLayout = new javax.swing.GroupLayout(selectPrimerPanel);
         selectPrimerPanel.setLayout(selectPrimerPanelLayout);
@@ -607,8 +608,8 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         if ((row = primerTable.getSelectedRow()) != -1) {
             int forStart = Integer.parseInt(primerTable.getValueAt(row, 0).toString());
             int forEnd = Integer.parseInt(primerTable.getValueAt(row, 1).toString());
-            int revStart = Integer.parseInt(primerTable.getValueAt(row, 2).toString());
-            int revEnd = Integer.parseInt(primerTable.getValueAt(row, 3).toString());
+            int revStart = Integer.parseInt(primerTable.getValueAt(row, 3).toString());
+            int revEnd = Integer.parseInt(primerTable.getValueAt(row, 4).toString());
 //            int groupID = Integer.parseInt(primerTable.getValueAt(row, 4).toString());
             forStartSpinner.setValue(forStart);
             forEndSpinner.setValue(forEnd);
@@ -648,19 +649,23 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                 (DefaultMutableTreeNode) seqTree.getModel().getRoot();
         String rootName = root.toString();
         if (!name.equals(rootName)) {
-            controller.setGroupID(DataGroup.getGroupIDByName(name));
-            seqTree.setModel(controller.populateTreeModel(DataGroup.getGroupIDByName(name)));
-            editTogButton.setEnabled(true);
-            editTogButton.setText("Edit");
-            customizedCheckBox.setEnabled(true);
-            customizedCheckBox.setSelected(false);
-            setPrimerEnabled(false);
-            setThresholdEnabled(false);
-            resetThreshold(controller.getGroupID());
-            resetPrimer();
-            ArrayList<PrimerPair> primerList = PrimerPair.getPrimerPairsByGroupID(
-                    DataGroup.getGroupIDByName(name));
-            primerTable.setModel(controller.pupolatePrimerTableModel(primerList));
+            try {
+                controller.setGroupID(DataGroup.getGroupIDByName(name));
+                seqTree.setModel(controller.populateTreeModel(DataGroup.getGroupIDByName(name)));
+                editTogButton.setEnabled(true);
+                editTogButton.setText("Edit");
+                customizedCheckBox.setEnabled(true);
+                customizedCheckBox.setSelected(false);
+                setPrimerEnabled(false);
+                setThresholdEnabled(false);
+                resetThreshold(controller.getGroupID());
+                resetPrimer();
+                ArrayList<PrimerPair> primerList = PrimerPair.getPrimerPairsByGroupID(DataGroup.getGroupIDByName(name));
+                primerTable.setModel(controller.pupolatePrimerTableModel(primerList));
+                controller.modifyTableHeader(primerTable);
+            } catch (SQLException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -673,6 +678,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
             seqTree.setModel(new DefaultTreeModel(root));
             seqTree.setRootVisible(false);
             primerTable.setModel(new MyTableModel(controller.getPrimerTableNames()));
+            controller.modifyTableHeader(primerTable);
             editTogButton.setEnabled(false);
             editTogButton.setText("Edit");
             customizedCheckBox.setEnabled(false);
