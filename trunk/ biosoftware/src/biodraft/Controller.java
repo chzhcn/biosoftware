@@ -32,10 +32,15 @@ public class Controller {
     private final String[] primerTableNames = {"Forward Primer\nStart",
         "Forward Primer\nEnd", "Forward Primer\nSequence", "Reverse Primer\nStart",
         "Reverse Primer\nEnd", "Reverse Primer\nSequence", "Score"};
+    private final String[] resultTableNames = {"Gene Name", "Coincidence"};
 //    private final Object[][] emptyprimerTableData = new Object[5][5];
 
     public String[] getPrimerTableNames() {
         return primerTableNames;
+    }
+
+    public String[] getResultTableNames() {
+        return resultTableNames;
     }
 
 //    public Object[][] getEmptyprimerTableData() {
