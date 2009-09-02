@@ -6,6 +6,7 @@
 package biodraft;
 
 import java.sql.*;
+import java.util.ArrayList;
 /**
  *
  * @author Owner
@@ -49,6 +50,18 @@ public class Main {
             }
         });
 
+//        ArrayList<GeneSeq> genes = GeneSeq.getGenesByGroupID(64);
+//        for (int i = 0 ; i < genes.size(); i ++) {
+//            System.out.println(genes.get(i).getGeneSequence());
+//        }
+
+//        DataGroup.getGroupByID(64);
+//         PreparedStatement stat = Main.con.prepareStatement("select * from DataGroup;");
+//            ResultSet rs = stat.executeQuery();
+//            while (rs.next()) {
+//                System.out.println(rs.getInt("rowid"));
+//            }
+//            rs.close();
 
     }
 

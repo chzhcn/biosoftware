@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -23,10 +22,13 @@ public class DataGroup {
     private int lowFilterLength;
     private int lowVariableRegionLength;
     private int highVariableRegionLength;
+    private String starSeq;
+//    private int groupid;
 
     public DataGroup(String name, int lowPrimerLength, int lowFilterLength,
             int lowVariableRegionLength, int highVariableRegionLength) {
         this.name = name;
+//        this.groupid = id;
         this.lowPrimerLength = lowPrimerLength;
         this.lowFilterLength = lowFilterLength;
         this.lowVariableRegionLength = lowVariableRegionLength;
@@ -53,6 +55,10 @@ public class DataGroup {
         return name;
     }
 
+//    public int getGroupid() {
+//        return groupid;
+//    }
+
     //======>
     public static byte[] getALNbyGroupID(int groupID) throws SQLException {
         byte[] data = null;
@@ -67,6 +73,7 @@ public class DataGroup {
             data = rs.getBytes("aln");
         }
         rs.close();
+        ps.close();
         return data;
     }
 
@@ -94,6 +101,7 @@ public class DataGroup {
         PreparedStatement ps = Main.con.prepareStatement(sql);
         ps.setString(1, name);
         ps.executeUpdate();
+        ps.close();
         groupID = getGroupIDByName(name);
         return groupID;
     }
@@ -112,6 +120,7 @@ public class DataGroup {
             ps.executeUpdate();
 //            Main.con.close();
             flag = true;
+            ps.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -128,6 +137,7 @@ public class DataGroup {
             ps.executeUpdate();
 //            con.close();
             flag = true;
+            ps.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -160,23 +170,63 @@ public class DataGroup {
                 id = rs.getInt("rowid");
             }
             rs.close();
+            ps.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return id;
     }
 
-    public static DataGroup getGroupByName(String name) {
-        DataGroup group = null;
+    public static String getGroupNameByID(int groupID) {
+        String name = null;
         try {
-            String sql = "select * from DataGroup where name = ?";
+            String sql = "select name from DataGroup where rowid = ?";
             PreparedStatement ps = Main.con.prepareStatement(sql);
-            ps.setString(1, name);
+            ps.setInt(1, groupID);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                group = new DataGroup(name, rs.getInt("lpth"), rs.getInt("lfth"), rs.getInt("lvth"), rs.getInt("hvth"));
+                name = rs.getString("name");
             }
             rs.close();
+            ps.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return name;
+    }
+
+    /*
+    public static DataGroup getGroupByName(String name) {
+    DataGroup group = null;
+    try {
+    String sql = "select * from DataGroup where name = ?";
+    PreparedStatement ps = Main.con.prepareStatement(sql);
+    ps.setString(1, name);
+    ResultSet rs = ps.executeQuery();
+    while (rs.next()) {
+    group = new DataGroup(name, rs.getInt("lpth"), rs.getInt("lfth"), rs.getInt("lvth"), rs.getInt("hvth"));
+    }
+    rs.close();
+    ps.close();
+    } catch (Exception ex) {
+    ex.printStackTrace();
+    }
+    return group;
+    }
+     */
+    public static DataGroup getGroupByID(int groupID) {
+        DataGroup group = null;
+        try {
+            String sql = "select * from DataGroup where rowid = ?";
+            PreparedStatement ps = Main.con.prepareStatement(sql);
+            ps.setInt(1, groupID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                group = new DataGroup(rs.getString("name"), rs.getInt("lpth"),
+                        rs.getInt("lfth"), rs.getInt("lvth"), rs.getInt("hvth"));
+            }
+            rs.close();
+            ps.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -186,19 +236,13 @@ public class DataGroup {
     public static ArrayList<DataGroup> getAllGroups() {
         ArrayList<DataGroup> groups = new ArrayList<DataGroup>();
         try {
-//            Connection con = DriverManager.getConnection("jdbc:sqlite:BioData.db");
             Statement stat = Main.con.createStatement();
-
             ResultSet rs = stat.executeQuery("select * from DataGroup;");
-
             while (rs.next()) {
-//                System.out.println(rs.getInt("rowid") + rs.getString("name"));
-//                System.out.println(rs.getInt("rowid"));
                 groups.add(new DataGroup(rs.getString("name"), rs.getInt("lpth"),
                         rs.getInt("lfth"), rs.getInt("lvth"), rs.getInt("hvth")));
             }
             rs.close();
-//            con.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -208,13 +252,12 @@ public class DataGroup {
     public static boolean setGroupName(String oldName, String newName) {
         boolean flag = false;
         try {
-//            Connection con = DriverManager.getConnection("jdbc:sqlite:BioData.db");
             String sql = "update DataGroup set name = ? where name = ?";
             PreparedStatement ps = Main.con.prepareStatement(sql);
             ps.setString(1, newName);
             ps.setString(2, oldName);
             ps.executeUpdate();
-//            con.close();
+            ps.close();
             flag = true;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -222,5 +265,41 @@ public class DataGroup {
         return flag;
     }
 
+    public static void setStarSeqByGroupID(String starSeq, int groupID)
+            throws SQLException {
+        String sql = "update DataGroup set starseq = ? where rowid = ?";
+        PreparedStatement ps = Main.con.prepareStatement(sql);
+        ps.setString(1, starSeq);
+        ps.setInt(2, groupID);
+        ps.executeUpdate();
+        ps.close();
+    }
 
+    public static String getStarSeqByGroupID(int groupID)
+            throws SQLException {
+        String starSeq = null;
+        String sql = "select starseq from DataGroup where rowid = ?";
+        PreparedStatement ps = Main.con.prepareStatement(sql);
+        ps.setInt(1, groupID);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            starSeq = rs.getString("starseq");
+        }
+        rs.close();
+        ps.close();
+        return starSeq;
+    }
+
+    public static void setThesholdByID(int lpth, int lfth,
+            int lvth, int hvth, int groupID) throws SQLException {
+        String sql = "update DataGroup set lpth = ?, lfth = ?, lvth = ?, hvth = ? where rowid = ?";
+        PreparedStatement ps = Main.con.prepareStatement(sql);
+        ps.setInt(1, lpth);
+        ps.setInt(2, lfth);
+        ps.setInt(3, lvth);
+        ps.setInt(4, hvth);
+        ps.setInt(5, groupID);
+        ps.executeUpdate();
+        ps.close();
+    }
 }

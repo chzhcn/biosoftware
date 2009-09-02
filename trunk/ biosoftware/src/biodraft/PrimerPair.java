@@ -42,8 +42,12 @@ public class PrimerPair {
         return score;
     }
 
+    public int getGroupID() {
+        return groupID;
+    }
+
     public static ArrayList<PrimerPair> getPrimerPairsByGroupID(int groupID) {
-        String sql = "select * from PrimerPair where groupid = ?";
+        String sql = "select * from PrimerPair where groupid = ? order by score Desc";
         ArrayList<PrimerPair> primerPairs = new ArrayList<PrimerPair>();
         try {
             PreparedStatement ps = Main.con.prepareStatement(sql);
@@ -51,9 +55,10 @@ public class PrimerPair {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 primerPairs.add(new PrimerPair(rs.getInt("forstart"), rs.getInt("forend"), rs.getInt("revstart"),
-                        rs.getInt("revend"), rs.getInt("score"), rs.getInt("groupid")));
+                        rs.getInt("revend"), rs.getDouble("score"), rs.getInt("groupid")));
             }
             rs.close();
+            ps.close();
         } catch (SQLException ex) {
             Logger.getLogger(PrimerPair.class.getName()).log(Level.SEVERE, null, ex);
             ex.printStackTrace();
@@ -61,8 +66,17 @@ public class PrimerPair {
         return primerPairs;
     }
 
-    public static void AddPrimerPairs() {
-
+    public static void AddPrimerPair(PrimerPair p) throws SQLException {
+        String sql = "insert into PrimerPair values(?, ?, ?, ?, ?, ?)";
+        PreparedStatement ps = Main.con.prepareStatement(sql);
+        ps.setInt(1, p.forStart);
+        ps.setInt(2, p.forEnd);
+        ps.setInt(3, p.revStart);
+        ps.setInt(4, p.revEnd);
+        ps.setDouble(5, p.score);
+        ps.setInt(6, p.groupID);
+        ps.executeUpdate();
+        ps.close();
     }
 
     public static boolean deletePrimerPairsByGroupID(int id) {
@@ -73,6 +87,7 @@ public class PrimerPair {
             ps.setInt(1, id);
             ps.executeUpdate();
             flag = true;
+            ps.close();
         } catch(Exception ex) {
             ex.printStackTrace();
         }

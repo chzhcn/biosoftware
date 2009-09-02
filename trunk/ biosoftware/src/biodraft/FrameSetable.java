@@ -10,6 +10,6 @@ package biodraft;
  * @author Owner
  */
 public interface FrameSetable {
-    void setGroup(String name);
-    void refreshFrame (String name);
+    void refreshFrame(String name);
+    void resetFrame (String name);
 }

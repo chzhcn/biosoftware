@@ -20,6 +20,16 @@ public class MyTableModel extends AbstractTableModel {
         this.data = data;
     }
 
+    public MyTableModel(String[] names){
+        this.columnNames = names;
+        this.data = new Object[5][7];
+        for (int i = 0; i < 5; i ++) {
+            for (int j = 0; j <7; j++) {
+                data[i][j] = "";
+            }
+        }
+    }
+
     public int getColumnCount() {
         return columnNames.length;
     }
