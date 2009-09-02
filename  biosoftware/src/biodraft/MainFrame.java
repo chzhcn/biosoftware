@@ -120,19 +120,23 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         jLabel2.setText("Min-Length of Fragment");
 
         pThreSpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        pThreSpinner.setEditor(new javax.swing.JSpinner.NumberEditor(pThreSpinner, ""));
         pThreSpinner.setEnabled(false);
 
         fThreSpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        fThreSpinner.setEditor(new javax.swing.JSpinner.NumberEditor(fThreSpinner, ""));
         fThreSpinner.setEnabled(false);
 
         jLabel3.setText("Length Between Primers  Min");
 
         minSpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        minSpinner.setEditor(new javax.swing.JSpinner.NumberEditor(minSpinner, ""));
         minSpinner.setEnabled(false);
 
         jLabel4.setText("Max");
 
         maxSpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        maxSpinner.setEditor(new javax.swing.JSpinner.NumberEditor(maxSpinner, ""));
         maxSpinner.setEnabled(false);
 
         editTogButton.setText("Edit");
@@ -270,10 +274,12 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
 
         jLabel6.setText("Start:");
 
+        forStartSpinner.setEditor(new javax.swing.JSpinner.NumberEditor(forStartSpinner, ""));
         forStartSpinner.setEnabled(false);
 
         jLabel7.setText("End:");
 
+        forEndSpinner.setEditor(new javax.swing.JSpinner.NumberEditor(forEndSpinner, ""));
         forEndSpinner.setEnabled(false);
 
         forPrimerText.setEditable(false);
@@ -283,6 +289,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
 
         jLabel9.setText("Start:");
 
+        revStartSpinner.setEditor(new javax.swing.JSpinner.NumberEditor(revStartSpinner, ""));
         revStartSpinner.setEnabled(false);
 
         jLabel10.setText("End:");
@@ -294,6 +301,11 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
 
         customizedCheckBox.setText("Use Customized Primer");
         customizedCheckBox.setEnabled(false);
+        customizedCheckBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                customizedCheckBoxItemStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout selectPrimerPanelLayout = new javax.swing.GroupLayout(selectPrimerPanel);
         selectPrimerPanel.setLayout(selectPrimerPanelLayout);
@@ -305,31 +317,27 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                     .addComponent(customizedCheckBox)
                     .addGroup(selectPrimerPanelLayout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(revPrimerText, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(selectPrimerPanelLayout.createSequentialGroup()
-                                .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel9))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(revEndSpinner)
-                                    .addComponent(revStartSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)))))
+                        .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel9))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(revEndSpinner)
+                            .addComponent(revStartSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)))
                     .addComponent(jLabel5)
                     .addGroup(selectPrimerPanelLayout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(forPrimerText, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(selectPrimerPanelLayout.createSequentialGroup()
-                                .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(forEndSpinner)
-                                    .addComponent(forStartSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)))))
+                        .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(forEndSpinner)
+                            .addComponent(forStartSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)))
                     .addComponent(jLabel8))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(57, Short.MAX_VALUE))
+            .addComponent(forPrimerText, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
+            .addComponent(revPrimerText, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
         );
         selectPrimerPanelLayout.setVerticalGroup(
             selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -615,6 +623,13 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
             forEndSpinner.setValue(forEnd);
             revStartSpinner.setValue(revStart);
             revEndSpinner.setValue(revEnd);
+            try {
+                forPrimerText.setText(controller.getPrimerSeq(forStart, forEnd, controller.getGroupID()));
+                revPrimerText.setText(controller.getPrimerSeq(revStart, revEnd, controller.getGroupID()));
+            } catch (SQLException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
         }
     }//GEN-LAST:event_primerTableMouseClicked
 
@@ -643,6 +658,12 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
             JOptionPane.showMessageDialog(this, "Invalid Primer");
         }
     }//GEN-LAST:event_typeButtonActionPerformed
+
+    private void customizedCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_customizedCheckBoxItemStateChanged
+        // TODO add your handling code here:
+        if(customizedCheckBox.isSelected())setPrimerEnabled(true);
+        else setPrimerEnabled(false);
+    }//GEN-LAST:event_customizedCheckBoxItemStateChanged
 
     public void refreshFrame(String name) {
         DefaultMutableTreeNode root =
