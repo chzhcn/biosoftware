@@ -13,34 +13,29 @@ package biodraft;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-
-
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 
 /**
  *
  * @author Administrator
  */
-public class MainFrame extends javax.swing.JFrame implements FrameSetable{
+public class MainFrame extends javax.swing.JFrame implements FrameSetable {
 
-//    public static Connection con;
-//    public static String selectedGroup = "root";
-    /** Creates new form MainFrame */
+    Controller controller = null;
+
     public MainFrame() {
         initComponents();
+        controller = Controller.getInstance();
     }
 
     /** This method is called from within the constructor to
@@ -76,7 +71,6 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
         primerTable = new javax.swing.JTable();
         bottomPanel = new javax.swing.JPanel();
         selectPrimerPanel = new javax.swing.JPanel();
-        customizedRadioButton = new javax.swing.JRadioButton();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         forStartSpinner = new javax.swing.JSpinner();
@@ -89,6 +83,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
         jLabel10 = new javax.swing.JLabel();
         revEndSpinner = new javax.swing.JSpinner();
         revPrimerText = new javax.swing.JTextField();
+        customizedCheckBox = new javax.swing.JCheckBox();
         typingPanel = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         pathText = new javax.swing.JFormattedTextField();
@@ -220,6 +215,11 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
                 "Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6", "Title 7"
             }
         ));
+        primerTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                primerTableMouseClicked(evt);
+            }
+        });
         primerScrollPane.setViewportView(primerTable);
 
         javax.swing.GroupLayout priemrPanelLayout = new javax.swing.GroupLayout(priemrPanel);
@@ -232,9 +232,11 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
         );
         priemrPanelLayout.setVerticalGroup(
             priemrPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 39, Short.MAX_VALUE)
+            .addGap(0, 119, Short.MAX_VALUE)
             .addGroup(priemrPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(primerScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE))
+                .addGroup(priemrPanelLayout.createSequentialGroup()
+                    .addComponent(primerScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout topRightPanelLayout = new javax.swing.GroupLayout(topRightPanel);
@@ -264,14 +266,6 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
 
         selectPrimerPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Selected Primer"));
 
-        customizedRadioButton.setText("Use Customized Primer");
-        customizedRadioButton.setEnabled(false);
-        customizedRadioButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                customizedRadioButtonActionPerformed(evt);
-            }
-        });
-
         jLabel5.setText("Forward Primer:");
 
         jLabel6.setText("Start:");
@@ -298,6 +292,8 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
         revPrimerText.setEditable(false);
         revPrimerText.setText("AGCTTTTTT");
 
+        customizedCheckBox.setText("Use Customized Primer");
+
         javax.swing.GroupLayout selectPrimerPanelLayout = new javax.swing.GroupLayout(selectPrimerPanel);
         selectPrimerPanel.setLayout(selectPrimerPanelLayout);
         selectPrimerPanelLayout.setHorizontalGroup(
@@ -305,6 +301,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
             .addGroup(selectPrimerPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(customizedCheckBox)
                     .addGroup(selectPrimerPanelLayout.createSequentialGroup()
                         .addGap(10, 10, 10)
                         .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -317,7 +314,6 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
                                 .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(revEndSpinner)
                                     .addComponent(revStartSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)))))
-                    .addComponent(customizedRadioButton)
                     .addComponent(jLabel5)
                     .addGroup(selectPrimerPanelLayout.createSequentialGroup()
                         .addGap(10, 10, 10)
@@ -338,8 +334,8 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
             selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(selectPrimerPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(customizedRadioButton)
-                .addGap(10, 10, 10)
+                .addComponent(customizedCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -363,7 +359,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
                     .addComponent(jLabel10))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(revPrimerText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         typingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Typing"));
@@ -380,6 +376,11 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
         });
 
         typeButton.setText("Start Typing");
+        typeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                typeButtonActionPerformed(evt);
+            }
+        });
 
         resultTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -463,7 +464,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
         openDataGroupMenuItem.setText("Open Data Group");
         openDataGroupMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                handleOpenMenuItemClicked(evt);
+                openDataGroupMenuItemActionPerformed(evt);
             }
         });
         fileMenu.add(openDataGroupMenuItem);
@@ -471,7 +472,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
         deleteDataGroupMenuItem.setText("Delete Data Group");
         deleteDataGroupMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                handleDeleteMenuClicked(evt);
+                openDataGroupMenuItemActionPerformed(evt);
             }
         });
         fileMenu.add(deleteDataGroupMenuItem);
@@ -503,73 +504,42 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(frameSplitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 514, Short.MAX_VALUE)
+                .addComponent(frameSplitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 594, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-//<<<<<<< .mine
     private void newDataGroupMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newDataGroupMenuItemActionPerformed
         // TODO add your handling code here:
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Fasta files", "fasta");
         newDataGroupFileChooser.setFileFilter(filter);
-//        newDataGroupFileChooser.showDialog(null, null);
         int returnVal = newDataGroupFileChooser.showOpenDialog(null);
-//        int returnVal = newDataGroupFileChooser.showOpenDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = newDataGroupFileChooser.getSelectedFile();
             String groupName = "";
-            int groupID;
-            while (groupName == "") {
+            while (groupName.equals("")) {
                 groupName = JOptionPane.showInputDialog("Please input the data group name");
             }
             try {
-                groupID = Controller.createNewDataGroup(file, groupName, seqTree);
-//            if (null != groupName) {
-//            }
+                seqTree.setModel(controller.createNewDataGroup(file, groupName));
             } catch (FileNotFoundException ex) {
-//                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 ex.getMessage();
             } catch (SQLException ex) {
                 ex.printStackTrace();
                 if (ex.getErrorCode() == 0x80004005) {
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
-
-//            Controller.refreshTree(seqTree, groupName);
             editTogButton.setEnabled(true);
-            customizedRadioButton.setEnabled(true);
-//            if (null != groupName) {
-//            }
+            customizedCheckBox.setEnabled(true);
         }
-//        newDataGroupFileChooser.setVisible(true);
     }//GEN-LAST:event_newDataGroupMenuItemActionPerformed
-
-    private void handleOpenMenuItemClicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_handleOpenMenuItemClicked
-        // TODO add your handling code here:
-//        new GroupPanel(this).setVisible(true);
-//        new GroupFrame().setVisible(true);
-//        GroupFrame frame = new GroupFrame();
-//        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-//        frame.getButton().setText("Open");
-        GroupDialog group = new GroupDialog(this, true, this);
-        Controller.populateGroupTable(group);
-        group.setVisible(true);
-    }//GEN-LAST:event_handleOpenMenuItemClicked
-
-    private void handleDeleteMenuClicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_handleDeleteMenuClicked
-        // TODO add your handling code here:
-//        GroupFrame frame = new GroupFrame();
-//        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-//        frame.getButton().setText("Delete");
-         GroupDialog group = new GroupDialog(this, true, this);
-         Controller.populateGroupTable(group);
-         group.setVisible(true);
-//        this.setTitle(group.getSelectedGroup());
-    }//GEN-LAST:event_handleDeleteMenuClicked
 
     private void editTogButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editTogButtonActionPerformed
         // TODO add your handling code here:
@@ -584,7 +554,6 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
             int lfth = Integer.parseInt(fThreSpinner.getValue().toString());
             int lvth = Integer.parseInt(minSpinner.getValue().toString());
             int hvth = Integer.parseInt(maxSpinner.getValue().toString());
-            String groupName = seqTree.getModel().getRoot().toString();
             try {
                 if (lpth == 0 || lfth == 0 || lvth == 0 || hvth == 0) {
                     throw new Exception("must != 0");
@@ -595,112 +564,142 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-            int groupID = DataGroup.getGroupIDByName(groupName);
-            int numOfSeqs = GeneSeq.getGeneNumByGroupName(groupName);
-//            String aln;
-            InputStream inStream = null;
             try {
-                byte[] data = DataGroup.getALNbyGroupID(groupID);
-//                String s = new String(data);
-//                System.out.println(s);
-//                FileOutputStream fos = new FileOutputStream("x.aln");
-//                fos.write(data);
-//                fos.close();
-                inStream = new ByteArrayInputStream(data);
-//                String aln = new String(data);
-//                System.out.println(aln);
+                DataGroup.setThesholdByID(lpth, lfth, lvth, hvth, controller.getGroupID());
+                String starSeq = DataGroup.getStarSeqByGroupID(controller.getGroupID());
+                ArrayList<String> seqs = GeneSeq.getSeqsByGroupID(controller.getGroupID());
+                MSTT mstt = new MSTT(starSeq, seqs, lpth, lvth, hvth, lfth, controller.getGroupID());
+                ArrayList<PrimerPair> primerPairs = mstt.run();
+                for (PrimerPair p : primerPairs) {
+                    PrimerPair.AddPrimerPair(p);
+                }
+                primerTable.setModel(controller.pupolatePrimerTableModel(primerPairs));
             } catch (SQLException ex) {
                 Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-            } 
-            MSTT mstt = new MSTT(numOfSeqs, lpth, lvth, hvth, lfth, inStream);
-            mstt.run();
-
-
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
     }//GEN-LAST:event_editTogButtonActionPerformed
 
-    private void customizedRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customizedRadioButtonActionPerformed
-        // TODO add your handling code here:
-        if (forStartSpinner.isEnabled() == true) {
-            setPrimerEnabled(false);
-        } else {
-            setPrimerEnabled(true);
-        }
-    }//GEN-LAST:event_customizedRadioButtonActionPerformed
-
     private void fileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileButtonActionPerformed
         // TODO add your handling code here:
-         FileNameExtensionFilter filter = new FileNameExtensionFilter("Text files", "txt");
-         expDataFileChooser.setFileFilter(filter);
-         int returnVal = expDataFileChooser.showOpenDialog(null);
-         if (returnVal == JFileChooser.APPROVE_OPTION) {
-             pathText.setText(expDataFileChooser.getSelectedFile().getPath());
-         }
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text files", "txt");
+        expDataFileChooser.setFileFilter(filter);
+        int returnVal = expDataFileChooser.showOpenDialog(null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            pathText.setText(expDataFileChooser.getSelectedFile().getPath());
+        }
     }//GEN-LAST:event_fileButtonActionPerformed
 
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
         // TODO add your handling code here:
-        if (seqTree.getModel().getChildCount(seqTree.getModel().getRoot()) != 0) {
-            resetThreshold(seqTree.getModel().getRoot().toString());
-        } else {
+        if (controller.getGroupID() == -1) {
             resetThreshold();
+        } else {
+            resetThreshold(controller.getGroupID());
         }
     }//GEN-LAST:event_resetButtonActionPerformed
 
-   
+    private void primerTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_primerTableMouseClicked
+        // TODO add your handling code here:
+        int row;
+        if ((row = primerTable.getSelectedRow()) != -1) {
+            int forStart = Integer.parseInt(primerTable.getValueAt(row, 0).toString());
+            int forEnd = Integer.parseInt(primerTable.getValueAt(row, 1).toString());
+            int revStart = Integer.parseInt(primerTable.getValueAt(row, 2).toString());
+            int revEnd = Integer.parseInt(primerTable.getValueAt(row, 3).toString());
+//            int groupID = Integer.parseInt(primerTable.getValueAt(row, 4).toString());
+            forStartSpinner.setValue(forStart);
+            forEndSpinner.setValue(forEnd);
+            revStartSpinner.setValue(revStart);
+            revEndSpinner.setValue(revEnd);
+        }
+    }//GEN-LAST:event_primerTableMouseClicked
 
-    public void setGroup(String name) {
-       DefaultMutableTreeNode root = (DefaultMutableTreeNode)seqTree.getModel().getRoot();
-       String rootName = root.toString();
-       if(!name.equals(rootName)) {
-           Controller.refreshTree(seqTree, name);
-           editTogButton.setEnabled(true);
-           editTogButton.setText("Edit");
-           customizedRadioButton.setEnabled(true);
-           customizedRadioButton.setSelected(false);
-           setPrimerEnabled(false);
-           setThresholdEnabled(false);
-           resetThreshold(name);
-           resetPrimer();
-           ArrayList<PrimerPair> primerList = PrimerPair.getPrimerPairsByGroupID(DataGroup.getGroupIDByName(name));
-           primerTable.setModel(Controller.pupolatePrimerTable(primerList));
-       }
-   }
+    private void openDataGroupMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openDataGroupMenuItemActionPerformed
+        // TODO add your handling code here:
+        GroupDialog group = new GroupDialog(this, true, this, controller);
+        group.setTableModel(controller.populateGroupTableModel(group));
+        group.setVisible(true);
+    }//GEN-LAST:event_openDataGroupMenuItemActionPerformed
 
-    public void refreshFrame (String name) {
-       DefaultMutableTreeNode root = (DefaultMutableTreeNode)seqTree.getModel().getRoot();
-       String rootName = root.toString();
-       if(name.equals(rootName)) {
-           root = new DefaultMutableTreeNode();
-           seqTree.setModel(new DefaultTreeModel(root));
-           seqTree.setRootVisible(false);
-           editTogButton.setEnabled(false);
-           editTogButton.setText("Edit");
-           customizedRadioButton.setEnabled(false);
-           customizedRadioButton.setSelected(false);
-           setPrimerEnabled(false);
-           setThresholdEnabled(false);
-           resetThreshold();
-           resetPrimer();
-       }
+    private void typeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeButtonActionPerformed
+        // TODO add your handling code here:
+         if (checkPrimer()) {
+            int groupid = DataGroup.getGroupIDByName(seqTree.getModel().getRoot().toString());
+            int filter = DataGroup.getGroupByID(groupid).getLowFilterLength();
+            PrimerPair primerpair = new PrimerPair(Integer.parseInt(forStartSpinner.getValue().toString()),
+                    Integer.parseInt(forEndSpinner.getValue().toString()),
+                    Integer.parseInt(revStartSpinner.getValue().toString()), Integer.parseInt(revEndSpinner.getValue().toString()),
+                    0, groupid);
+            ArrayList<GeneSeq> genesList = GeneSeq.getGenesByGroupID(groupid);
+            ArrayList<Double> expData = controller.getExpMassList(new File(pathText.getText()));
+            Object[][] data = controller.typing(genesList, expData, primerpair, filter);
+            String[] columnNames = {"Gene Name", "Coincidence"};
+            resultTable.setModel(new MyTableModel(columnNames, data));
+        } else {
+            JOptionPane.showMessageDialog(this, "Invalid Primer");
+        }
+    }//GEN-LAST:event_typeButtonActionPerformed
+
+    public void refreshFrame(String name) {
+        DefaultMutableTreeNode root =
+                (DefaultMutableTreeNode) seqTree.getModel().getRoot();
+        String rootName = root.toString();
+        if (!name.equals(rootName)) {
+            controller.setGroupID(DataGroup.getGroupIDByName(name));
+            seqTree.setModel(controller.populateTreeModel(DataGroup.getGroupIDByName(name)));
+            editTogButton.setEnabled(true);
+            editTogButton.setText("Edit");
+            customizedCheckBox.setEnabled(true);
+            customizedCheckBox.setSelected(false);
+            setPrimerEnabled(false);
+            setThresholdEnabled(false);
+            resetThreshold(controller.getGroupID());
+            resetPrimer();
+            ArrayList<PrimerPair> primerList = PrimerPair.getPrimerPairsByGroupID(
+                    DataGroup.getGroupIDByName(name));
+            primerTable.setModel(controller.pupolatePrimerTableModel(primerList));
+        }
     }
 
-    public void setThresholdEnabled(boolean flag){
+    public void resetFrame(String name) {
+        DefaultMutableTreeNode root = (DefaultMutableTreeNode) seqTree.getModel().getRoot();
+        String rootName = root.toString();
+        if (name.equals(rootName)) {
+            controller.setGroupID(-1);
+            root = new DefaultMutableTreeNode();
+            seqTree.setModel(new DefaultTreeModel(root));
+            seqTree.setRootVisible(false);
+            primerTable.setModel(new MyTableModel(controller.getPrimerTableNames()));
+            editTogButton.setEnabled(false);
+            editTogButton.setText("Edit");
+            customizedCheckBox.setEnabled(false);
+            customizedCheckBox.setSelected(false);
+            setPrimerEnabled(false);
+            setThresholdEnabled(false);
+            resetThreshold();
+            resetPrimer();
+        }
+    }
+
+    public void setThresholdEnabled(boolean flag) {
         pThreSpinner.setEnabled(flag);
         fThreSpinner.setEnabled(flag);
         maxSpinner.setEnabled(flag);
         minSpinner.setEnabled(flag);
     }
 
-    public void resetThreshold (String name){
-        DataGroup datagroup = DataGroup.getGroupByName(name);
+    public void resetThreshold(int groupID) {
+        DataGroup datagroup = DataGroup.getGroupByID(groupID);
         pThreSpinner.setValue(datagroup.getLowPrimerLength());
         fThreSpinner.setValue(datagroup.getLowFilterLength());
         maxSpinner.setValue(datagroup.getHighVariableRegionLength());
         minSpinner.setValue(datagroup.getLowVariableRegionLength());
     }
 
-    public void resetThreshold(){
+    public void resetThreshold() {
         pThreSpinner.setValue(0);
         fThreSpinner.setValue(0);
         maxSpinner.setValue(0);
@@ -718,28 +717,27 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable{
         forStartSpinner.setValue(0);
         forEndSpinner.setValue(0);
         revStartSpinner.setValue(0);
-       revEndSpinner.setValue(0);
+        revEndSpinner.setValue(0);
     }
-    /**
-     * @param args the command line arguments
-     */
-//    public static void main(String args[]) {
-//        try {
-//            Class.forName("org.sqlite.JDBC");
-//            con = DriverManager.getConnection("jdbc:sqlite:BioData.db");
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new MainFrame().setVisible(true);
-//            }
-//        });
-//    }
+
+    private boolean checkPrimer(){
+        boolean flag = true;
+        if( Integer.parseInt(forStartSpinner.getValue().toString()) >= Integer.parseInt(forEndSpinner.getValue().toString()) ||
+                Integer.parseInt(revStartSpinner.getValue().toString()) >= Integer.parseInt(revEndSpinner.getValue().toString())) {
+            flag = false;
+        } else if (Integer.parseInt(forEndSpinner.getValue().toString()) == 0 ||
+                Integer.parseInt(revStartSpinner.getValue().toString()) == 0 ||
+                Integer.parseInt(revEndSpinner.getValue().toString()) == 0) {
+            flag = false;
+        } else if (Integer.parseInt(forEndSpinner.getValue().toString()) >= Integer.parseInt(revStartSpinner.getValue().toString())) {
+            flag = false;
+        }
+        return flag;
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JPanel bottomPanel;
-    private javax.swing.JRadioButton customizedRadioButton;
+    private javax.swing.JCheckBox customizedCheckBox;
     private javax.swing.JMenuItem deleteDataGroupMenuItem;
     private javax.swing.JToggleButton editTogButton;
     private javax.swing.JFileChooser expDataFileChooser;

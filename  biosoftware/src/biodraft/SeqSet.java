@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class SeqSet {
 
-      private ArrayList<Sequence> seqs;
+      private ArrayList<Seq> seqs;
       private StarSequence starSeq;
 //      private ArrayList<Character> starSeq;
 
@@ -23,11 +23,11 @@ public class SeqSet {
             int dataBegin = aln.FilterHeader();
             int numOfSeqs = aln.getNumOfSeqs();
 
-            seqs = new ArrayList<Sequence>();
+            seqs = new ArrayList<Seq>();
             starSeq = new StarSequence();
 
             for (int i = 0; i < numOfSeqs; i++) {
-                  seqs.add(new Sequence());
+                  seqs.add(new Seq());
             }
 
             int size = aln.getCharSeq().size();
@@ -111,7 +111,24 @@ public class SeqSet {
 
       }
 
-      public ArrayList<Sequence> getSeqs() {
+      public SeqSet(String starString, ArrayList<String> seqStrings) {          
+          starSeq = new StarSequence(stringToArrayListChar(starString));
+          seqs = new ArrayList<Seq>();
+          for(int i = 0; i < seqStrings.size(); i++) {
+              seqs.add(new Seq(stringToArrayListChar(seqStrings.get(i))));
+          }
+      }
+
+      private ArrayList<Character> stringToArrayListChar(String s) {
+          ArrayList<Character> arrayC = new ArrayList<Character>();
+          int starLength = s.length();
+          for(int i = 0; i < starLength; i++) {
+              arrayC.add(s.charAt(i));
+          }
+          return arrayC;
+      }
+
+      public ArrayList<Seq> getSeqs() {
             return seqs;
       }
 

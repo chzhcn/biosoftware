@@ -93,7 +93,7 @@ public class PCRList {
                         }
                   }
             }
-            cmeans = new double[pcrSize];
+//            cmeans = new double[pcrSize];
             cmeans = Score(fragmentTable);
 //            for (int i = 0; i < pcrSize; i++) {
 //                  System.out.print("*" + i + "*");
@@ -118,6 +118,10 @@ public class PCRList {
 //                        }
 //                  }
 //            }
+      }
+
+      public void convertToDatabaseType() {
+
       }
 
       public double[] getCmeans() {
