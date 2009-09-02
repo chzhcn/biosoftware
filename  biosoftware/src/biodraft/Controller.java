@@ -14,8 +14,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JTable;
+import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -26,18 +29,18 @@ import javax.swing.tree.DefaultTreeModel;
 public class Controller {
 
     int groupID = -1;
-    private final String[] primerTableNames = {"Forward Primer Start",
-        "Forward Primer End", "Forward Primer Sequence", "Reverse Primer Start",
-        "Reverse Primer End", "Reverse Primer Sequence","Score"};
-    private final Object[][] emptyprimerTableData = new Object[5][5];
+    private final String[] primerTableNames = {"Forward Primer\nStart",
+        "Forward Primer\nEnd", "Forward Primer\nSequence", "Reverse Primer\nStart",
+        "Reverse Primer\nEnd", "Reverse Primer\nSequence","Score"};
+//    private final Object[][] emptyprimerTableData = new Object[5][5];
 
     public String[] getPrimerTableNames() {
         return primerTableNames;
     }
 
-    public Object[][] getEmptyprimerTableData() {
-        return emptyprimerTableData;
-    }
+//    public Object[][] getEmptyprimerTableData() {
+//        return emptyprimerTableData;
+//    }
 
     public int getGroupID() {
         return groupID;
@@ -163,22 +166,36 @@ public class Controller {
         return new MyTableModel(columnNames, data);
     }
 
-    public MyTableModel pupolatePrimerTableModel(ArrayList<PrimerPair> primerPairs) {
+    public MyTableModel pupolatePrimerTableModel(ArrayList<PrimerPair> primerPairs) throws SQLException {
 //        int groupID = primerPairs.get(0).getGroupID();
         primerPairs = PrimerPair.getPrimerPairsByGroupID(groupID);
-        Object[][] data = new Object[primerPairs.size()][5];
+        Object[][] data = new Object[primerPairs.size()][7];
         PrimerPair primerpair;
         for (int i = 0; i < primerPairs.size(); i++) {
             primerpair = primerPairs.get(i);
             data[i][0] = primerpair.getForStart();
             data[i][1] = primerpair.getForEnd();
-            data[i][2] = primerpair.getRevStart();
-            data[i][3] = primerpair.getRevEnd();
-            data[i][4] = primerpair.getScore();
+            data[i][2] = getPrimerSeq(primerpair.getForStart(),  primerpair.getForEnd(), groupID);
+            data[i][3] = primerpair.getRevStart();
+            data[i][4] = primerpair.getRevEnd();
+            data[i][5] = getPrimerSeq(primerpair.getRevStart(),  primerpair.getRevEnd(), groupID);
+            data[i][6] = primerpair.getScore();
         }
         return (new MyTableModel(primerTableNames, data));
     }
 
+    private String getPrimerSeq(int start, int end, int groupid) throws SQLException {
+        String primer = GeneSeq.getSeqsByGroupID(groupid).get(0).substring(start, end+1);
+        return primer;
+    }
+
+    public void modifyTableHeader(JTable table) {
+        MultiLineHeaderRenderer renderer = new MultiLineHeaderRenderer();
+        Enumeration e = table.getColumnModel().getColumns();
+        while (e.hasMoreElements()) {
+            ((TableColumn) e.nextElement()).setHeaderRenderer(renderer);
+        }
+    }
 //    public void makeNoise(ArrayList<Double> data) {
 //        int changeNum = (int) (Math.random() * 15);
 //        for (int i = 0; i < changeNum; i++) {
