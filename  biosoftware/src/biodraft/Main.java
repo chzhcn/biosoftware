@@ -62,6 +62,11 @@ public class Main {
 //                System.out.println(rs.getInt("rowid"));
 //            }
 //            rs.close();
+        ArrayList<GeneSeq> genes = GeneSeq.getGenesByGroupID(63);
+        for (int i = 0 ; i < genes.size(); i ++) {
+            System.out.println(genes.get(i).getGeneName());
+            System.out.println(genes.get(i).getGeneSequence());
+        }
 
     }
 

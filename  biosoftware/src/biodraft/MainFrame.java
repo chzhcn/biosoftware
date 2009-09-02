@@ -36,6 +36,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         controller = Controller.getInstance();
         primerTable.setModel(new MyTableModel(controller.getPrimerTableNames()));
         controller.modifyTableHeader(primerTable);
+        resultTable.setModel(new MyTableModel(controller.getResultTableNames()));
     }
 
     /** This method is called from within the constructor to
