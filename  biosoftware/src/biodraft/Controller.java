@@ -67,8 +67,10 @@ public class Controller {
         String aln = null;
         try {
             p2 = rt.exec(command);
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(p2.getOutputStream()));
-            BufferedReader b = new BufferedReader(new InputStreamReader(p2.getInputStream()));
+            BufferedWriter bw = new BufferedWriter(
+                    new OutputStreamWriter(p2.getOutputStream()));
+            BufferedReader b = new BufferedReader(
+                    new InputStreamReader(p2.getInputStream()));
             char[] cat = para.toCharArray();
             for (int i = 0; i < cat.length; i++) {
                 bw.write(cat[i]);
@@ -87,14 +89,17 @@ public class Controller {
         ArrayList<String> names = new ArrayList<String>();
         BufferedReader br = new BufferedReader(new FileReader(file));
         String name = null;
+//        int numOfSeqs = 0;
         StringBuffer temp = new StringBuffer(2048);
         if (groupID != -1) {
             for (String s = br.readLine(); null != s; s = br.readLine()) {
                 s = s.trim();
                 if (0 < s.length()) {
                     if (s.charAt(0) == '>') {
+//                        numOfSeqs++;
                         if (null != name) {
-//                            GeneSeq.addGene(new GeneSeq(name, temp.toString(), groupID));
+//                            GeneSeq.addGene(new GeneSeq(
+//                                    name, temp.toString(), groupID));
                             names.add(name);
                             name = null;
                             temp.setLength(0);
@@ -104,7 +109,7 @@ public class Controller {
                         if (null != name) {
                             temp.append(s);
                         } else {
-                            throw new Exception("invalid fasta files");
+                            throw new Exception("Invalid fasta file!");
                         }
                     }
                 }
@@ -112,9 +117,11 @@ public class Controller {
             if (null != name) {
 //                GeneSeq.addGene(new GeneSeq(name, temp.toString(), groupID));
                 names.add(name);
+//                numOfSeqs++;
             }
         }
         return names;
+
     }
 
     private SeqSet decomposeAln(File file, int numOfSeqs)
@@ -126,19 +133,29 @@ public class Controller {
     }
 
     private void parseSeqs(File file, File alnFile) throws Exception {
-        ArrayList<String> names = decomposeFasta(file);
-        SeqSet ss = decomposeAln(alnFile, names.size());
+//        ArrayList<String> names = decomposeFasta(file);
+        ArrayList<String> fastaNames = decomposeFasta(file);
+        int size = fastaNames.size();
+        SeqSet ss = decomposeAln(alnFile, size);
         ArrayList<Seq> seqs = ss.getSeqs();
-        int size = names.size();
+        String[] nameArray = ss.getNameArray();
         for (int i = 0; i < size; i++) {
-            GeneSeq.addGene(new GeneSeq(
-                    names.get(i), seqs.get(i).toString(), groupID));
+            for (int j = 0; j < size; j++) {
+                if (fastaNames.get(i).startsWith(nameArray[j])) {
+                    GeneSeq.addGene(new GeneSeq(fastaNames.get(i),
+                            seqs.get(i).toString(), groupID));
+                }
+            }
+
         }
+
+
         DataGroup.setStarSeqByGroupID(
                 ss.getStarSeq().toString(), groupID);
     }
 
-    public DefaultTreeModel createNewDataGroup(File file, String groupName) throws SQLException, Exception {
+    public DefaultTreeModel createNewDataGroup(
+            File file, String groupName) throws SQLException, Exception {
         groupID = DataGroup.addGroupByName(groupName);
         File alnFile = new File(clutalw(file));
         parseSeqs(file, alnFile);
@@ -170,7 +187,8 @@ public class Controller {
         return new MyTableModel(columnNames, data);
     }
 
-    public MyTableModel pupolatePrimerTableModel(ArrayList<PrimerPair> primerPairs) throws SQLException {
+    public MyTableModel pupolatePrimerTableModel(
+            ArrayList<PrimerPair> primerPairs) throws SQLException {
 //        int groupID = primerPairs.get(0).getGroupID();
         primerPairs = PrimerPair.getPrimerPairsByGroupID(groupID);
         Object[][] data = new Object[primerPairs.size()][7];
@@ -179,17 +197,21 @@ public class Controller {
             primerpair = primerPairs.get(i);
             data[i][0] = primerpair.getForStart();
             data[i][1] = primerpair.getForEnd();
-            data[i][2] = getPrimerSeq(primerpair.getForStart(), primerpair.getForEnd(), groupID);
+            data[i][2] = getPrimerSeq(primerpair.getForStart()
+                    , primerpair.getForEnd(), groupID);
             data[i][3] = primerpair.getRevStart();
             data[i][4] = primerpair.getRevEnd();
-            data[i][5] = getPrimerSeq(primerpair.getRevStart(), primerpair.getRevEnd(), groupID);
+            data[i][5] = getPrimerSeq(primerpair.getRevStart(),
+                    primerpair.getRevEnd(), groupID);
             data[i][6] = primerpair.getScore();
         }
         return (new MyTableModel(primerTableNames, data));
     }
 
-    public String getPrimerSeq(int start, int end, int groupid) throws SQLException {
-        String primer = GeneSeq.getSeqsByGroupID(groupid).get(0).substring(start, end + 1);
+    public String getPrimerSeq(int start, int end, int groupid)
+            throws SQLException {
+        String primer = GeneSeq.getSeqsByGroupID(
+                groupid).get(0).substring(start, end + 1);
         return primer;
     }
 
@@ -246,7 +268,8 @@ public class Controller {
 //        }
 //    }
 
-    public Object[][] typing(ArrayList<GeneSeq> genesList, ArrayList<Double> expData, PrimerPair primerpair, int filter) {
+    public Object[][] typing(ArrayList<GeneSeq> genesList,
+            ArrayList<Double> expData, PrimerPair primerpair, int filter) {
         Object[][] typingResult = new Object[genesList.size()][2];
         int start = primerpair.getForStart();
         int end = primerpair.getRevEnd();
@@ -255,7 +278,8 @@ public class Controller {
         int cursor = 0;
         for (int i = 0; i < genesList.size(); i++) {
             ArrayList<Double> modData = new ArrayList<Double>();
-            sequence = genesList.get(i).getGeneSequence().substring(start, end + 1).replace("-", "");
+            sequence = genesList.get(i).getGeneSequence()
+                    .substring(start, end + 1).replace("-", "");
             for (int j = 0; j < sequence.length(); j++) {
                 switch (sequence.charAt(j)) {
                     case 'A':

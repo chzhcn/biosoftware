@@ -32,7 +32,7 @@ public class Seq {
     }
 
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         for (char c : seq) {
             sb.append(c);
         }
