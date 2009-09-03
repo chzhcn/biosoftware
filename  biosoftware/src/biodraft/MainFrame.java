@@ -18,8 +18,16 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerDateModel;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.NumberFormatter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -32,11 +40,17 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
     Controller controller = null;
 
     public MainFrame() {
-        initComponents();
-        controller = Controller.getInstance();
-        primerTable.setModel(new MyTableModel(controller.getPrimerTableNames()));
-        controller.modifyTableHeader(primerTable);
-        resultTable.setModel(new MyTableModel(controller.getResultTableNames()));
+        try {
+            initComponents();
+            controller = Controller.getInstance();
+            ArrayList<PrimerPair> primerList = new ArrayList<PrimerPair>();
+            primerTable.setModel(controller.pupolatePrimerTableModel(primerList));
+            controller.modifyTableHeader(primerTable);
+            resultTable.setModel(new MyTableModel(controller.getResultTableNames()));
+            setAllSpinners();
+        } catch (SQLException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /** This method is called from within the constructor to
@@ -77,14 +91,16 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         forStartSpinner = new javax.swing.JSpinner();
         jLabel7 = new javax.swing.JLabel();
         forEndSpinner = new javax.swing.JSpinner();
-        forPrimerText = new javax.swing.JTextField();
+        customizedCheckBox = new javax.swing.JCheckBox();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        forPrimerText = new javax.swing.JTextArea();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         revStartSpinner = new javax.swing.JSpinner();
-        jLabel10 = new javax.swing.JLabel();
         revEndSpinner = new javax.swing.JSpinner();
-        revPrimerText = new javax.swing.JTextField();
-        customizedCheckBox = new javax.swing.JCheckBox();
+        jLabel10 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        revPrimerText = new javax.swing.JTextArea();
         typingPanel = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         pathText = new javax.swing.JFormattedTextField();
@@ -120,7 +136,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
 
         jLabel2.setText("Min-Length of Fragment");
 
-        pThreSpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        pThreSpinner.setModel(new javax.swing.SpinnerNumberModel());
         pThreSpinner.setEditor(new javax.swing.JSpinner.NumberEditor(pThreSpinner, ""));
         pThreSpinner.setEnabled(false);
 
@@ -277,28 +293,21 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
 
         forStartSpinner.setEditor(new javax.swing.JSpinner.NumberEditor(forStartSpinner, ""));
         forStartSpinner.setEnabled(false);
+        forStartSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                forStartSpinnerStateChanged(evt);
+            }
+        });
 
         jLabel7.setText("End:");
 
         forEndSpinner.setEditor(new javax.swing.JSpinner.NumberEditor(forEndSpinner, ""));
         forEndSpinner.setEnabled(false);
-
-        forPrimerText.setEditable(false);
-        forPrimerText.setText("AGCTTTTTT");
-
-        jLabel8.setText("Reverse Priemr:");
-
-        jLabel9.setText("Start:");
-
-        revStartSpinner.setEditor(new javax.swing.JSpinner.NumberEditor(revStartSpinner, ""));
-        revStartSpinner.setEnabled(false);
-
-        jLabel10.setText("End:");
-
-        revEndSpinner.setEnabled(false);
-
-        revPrimerText.setEditable(false);
-        revPrimerText.setText("AGCTTTTTT");
+        forEndSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                forStartSpinnerStateChanged(evt);
+            }
+        });
 
         customizedCheckBox.setText("Use Customized Primer");
         customizedCheckBox.setEnabled(false);
@@ -308,6 +317,39 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
             }
         });
 
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        forPrimerText.setColumns(20);
+        forPrimerText.setLineWrap(true);
+        forPrimerText.setRows(5);
+        forPrimerText.setEnabled(false);
+        jScrollPane1.setViewportView(forPrimerText);
+
+        jLabel8.setText("Reverse Primer:");
+
+        jLabel9.setText("Start:");
+
+        revStartSpinner.setEditor(new javax.swing.JSpinner.NumberEditor(revStartSpinner, ""));
+        revStartSpinner.setEnabled(false);
+        revStartSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                revStartSpinnerStateChanged(evt);
+            }
+        });
+
+        revEndSpinner.setEditor(new javax.swing.JSpinner.NumberEditor(revEndSpinner, ""));
+        revEndSpinner.setEnabled(false);
+
+        jLabel10.setText("End:");
+
+        jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        revPrimerText.setColumns(20);
+        revPrimerText.setLineWrap(true);
+        revPrimerText.setRows(5);
+        revPrimerText.setEnabled(false);
+        jScrollPane2.setViewportView(revPrimerText);
+
         javax.swing.GroupLayout selectPrimerPanelLayout = new javax.swing.GroupLayout(selectPrimerPanel);
         selectPrimerPanel.setLayout(selectPrimerPanelLayout);
         selectPrimerPanelLayout.setHorizontalGroup(
@@ -315,16 +357,8 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
             .addGroup(selectPrimerPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
                     .addComponent(customizedCheckBox)
-                    .addGroup(selectPrimerPanelLayout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel9))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(revEndSpinner)
-                            .addComponent(revStartSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)))
                     .addComponent(jLabel5)
                     .addGroup(selectPrimerPanelLayout.createSequentialGroup()
                         .addGap(10, 10, 10)
@@ -335,10 +369,18 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                         .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(forEndSpinner)
                             .addComponent(forStartSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)))
-                    .addComponent(jLabel8))
-                .addContainerGap(57, Short.MAX_VALUE))
-            .addComponent(forPrimerText, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
-            .addComponent(revPrimerText, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
+                    .addComponent(jLabel8)
+                    .addGroup(selectPrimerPanelLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel9))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(revEndSpinner)
+                            .addComponent(revStartSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
         );
         selectPrimerPanelLayout.setVerticalGroup(
             selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -356,8 +398,8 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                     .addComponent(forEndSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(forPrimerText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -368,8 +410,8 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                     .addComponent(revEndSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(revPrimerText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         typingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Typing"));
@@ -435,7 +477,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                     .addComponent(fileButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(resultScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(109, Short.MAX_VALUE))
+                .addContainerGap(119, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout bottomPanelLayout = new javax.swing.GroupLayout(bottomPanel);
@@ -451,11 +493,11 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         );
         bottomPanelLayout.setVerticalGroup(
             bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(bottomPanelLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bottomPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(typingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(selectPrimerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(selectPrimerPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(typingPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -514,7 +556,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(frameSplitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 594, Short.MAX_VALUE)
+                .addComponent(frameSplitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -611,8 +653,27 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         }
     }//GEN-LAST:event_resetButtonActionPerformed
 
+    private void removeAllChangeListener(JSpinner js) {
+        ChangeListener[] cls = js.getChangeListeners();
+                for(int i = 0; i < cls.length; i++) {
+            js.removeChangeListener(cls[i]);
+        }
+    }
+
     private void primerTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_primerTableMouseClicked
         // TODO add your handling code here:
+//        forStartSpinner.removeChangeListener(forStartSpinner.getChangeListeners()[0]);
+//        forEndSpinner.removeChangeListener(forEndSpinner.getChangeListeners()[0]);
+//        revStartSpinner.removeChangeListener(revStartSpinner.getChangeListeners()[0]);
+//        revEndSpinner.removeChangeListener(revEndSpinner.getChangeListeners()[0]);
+//        removeAllChangeListener(forStartSpinner);
+//        removeAllChangeListener(forEndSpinner);
+//        removeAllChangeListener(revStartSpinner);
+//        removeAllChangeListener(revEndSpinner);
+//        for(int i = 0; i < forStartSpinner.getChangeListeners().length; i++) {
+//            forStartSpinner.removeChangeListener(null);
+//        }
+
         int row;
         if ((row = primerTable.getSelectedRow()) != -1) {
             int forStart = Integer.parseInt(primerTable.getValueAt(row, 0).toString());
@@ -623,7 +684,13 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
             forStartSpinner.setValue(forStart);
             forEndSpinner.setValue(forEnd);
             revStartSpinner.setValue(revStart);
+
             revEndSpinner.setValue(revEnd);
+            forStartSpinner.setModel(new SpinnerNumberModel(forStart, forStart, forEnd, 1));
+            forEndSpinner.setModel(new SpinnerNumberModel(forEnd, forStart, forEnd, 1));
+            revStartSpinner.setModel(new SpinnerNumberModel(revStart, revStart, revEnd, 1));
+            revEndSpinner.setModel(new SpinnerNumberModel(revEnd, revStart, revEnd, 1));
+            
             try {
                 forPrimerText.setText(controller.getPrimerSeq(forStart, forEnd, controller.getGroupID()));
                 revPrimerText.setText(controller.getPrimerSeq(revStart, revEnd, controller.getGroupID()));
@@ -665,6 +732,31 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         if(customizedCheckBox.isSelected())setPrimerEnabled(true);
         else setPrimerEnabled(false);
     }//GEN-LAST:event_customizedCheckBoxItemStateChanged
+
+    private void forStartSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_forStartSpinnerStateChanged
+//        try {
+//            // TODO add your handling code here:
+////        int increment = Integer.parseInt(forStartSpinner.getValue().toString())-
+////                Integer.parseInt(((SpinnerNumberModel)forStartSpinner.getModel()).getMinimum().toString());
+////        forPrimerText.setText(forPrimerText.getText().substring(increment+1));
+//            int forStart = Integer.parseInt(forStartSpinner.getValue().toString());
+//            int forEnd = Integer.parseInt(forEndSpinner.getValue().toString());
+//            forPrimerText.setText(controller.getPrimerSeq(forStart, forEnd, controller.getGroupID()));
+//        } catch (SQLException ex) {
+//            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+    }//GEN-LAST:event_forStartSpinnerStateChanged
+
+    private void revStartSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_revStartSpinnerStateChanged
+//        try {
+//            // TODO add your handling code here:
+//            int revStart = Integer.parseInt(revStartSpinner.getValue().toString());
+//            int revEnd = Integer.parseInt(revEndSpinner.getValue().toString());
+//            revPrimerText.setText(controller.getPrimerSeq(revStart, revEnd, controller.getGroupID()));
+//        } catch (SQLException ex) {
+//            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+    }//GEN-LAST:event_revStartSpinnerStateChanged
 
     public void refreshFrame(String name) {
         DefaultMutableTreeNode root =
@@ -762,6 +854,29 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         }
         return flag;
     }
+    
+    private void setSpinner(JSpinner spinner, int deValue, int min,int max ){
+        spinner.setModel(new SpinnerNumberModel(deValue, min, max, 1));
+        JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinner, "0");
+        spinner.setEditor(editor);
+        JFormattedTextField textField = ((JSpinner.NumberEditor) spinner.getEditor()).getTextField();
+        textField.setEditable(true);
+        DefaultFormatterFactory factory = (DefaultFormatterFactory) textField.getFormatterFactory();
+        NumberFormatter formatter = (NumberFormatter) factory.getDefaultFormatter();
+        formatter.setAllowsInvalid(false);
+    }
+    
+    private void setAllSpinners() {
+        setSpinner(pThreSpinner, 0, 0, Integer.MAX_VALUE);
+        setSpinner(fThreSpinner, 0, 0, Integer.MAX_VALUE);
+        setSpinner(minSpinner, 0, 0, Integer.MAX_VALUE);
+        setSpinner(maxSpinner, 0, 0, Integer.MAX_VALUE);
+        setSpinner(forStartSpinner, 0, 0, Integer.MAX_VALUE);
+        setSpinner(forEndSpinner, 0, 0, Integer.MAX_VALUE);
+        setSpinner(revStartSpinner, 0, 0, Integer.MAX_VALUE);
+        setSpinner(revEndSpinner, 0, 0, Integer.MAX_VALUE);
+
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JPanel bottomPanel;
@@ -773,7 +888,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
     private javax.swing.JButton fileButton;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JSpinner forEndSpinner;
-    private javax.swing.JTextField forPrimerText;
+    private javax.swing.JTextArea forPrimerText;
     private javax.swing.JSpinner forStartSpinner;
     private javax.swing.JSplitPane frameSplitPane;
     private javax.swing.JMenu helpMenu;
@@ -788,6 +903,8 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSpinner maxSpinner;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JSpinner minSpinner;
@@ -805,7 +922,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
     private javax.swing.JScrollPane resultScrollPane;
     private javax.swing.JTable resultTable;
     private javax.swing.JSpinner revEndSpinner;
-    private javax.swing.JTextField revPrimerText;
+    private javax.swing.JTextArea revPrimerText;
     private javax.swing.JSpinner revStartSpinner;
     private javax.swing.JPanel selectPrimerPanel;
     private javax.swing.JTree seqTree;
