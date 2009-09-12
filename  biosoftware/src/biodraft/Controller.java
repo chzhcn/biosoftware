@@ -57,37 +57,42 @@ public class Controller {
         return controller;
     }
 
-
-    private String clutalw(File file) throws
-            SQLException, IOException, InterruptedException {
-        String para = "1\n" + file.getAbsolutePath() + "\n2\n1\n\n\nX\n\nX\n";
-        String command = "clustalw2.exe";
-        Runtime rt = Runtime.getRuntime();
-        Process p2;
+    private String clutalw(File file) throws SQLException,
+            IOException, InterruptedException, Exception {
         String aln = null;
-        p2 = rt.exec(command);
-        BufferedWriter bw = new BufferedWriter(
-                new OutputStreamWriter(p2.getOutputStream()));
+        if (file.exists()) {
+            String para = "1\n" + file.getAbsolutePath() + "\n2\n1\n\n\nX\n\nX\n";
+            String command = "clustalw2.exe";
+            Runtime rt = Runtime.getRuntime();
+            Process p2 = null;
+            aln = null;
+            p2 = rt.exec(command);
+            BufferedWriter bw = new BufferedWriter(
+                    new OutputStreamWriter(p2.getOutputStream()));
 //        BufferedReader b = new BufferedReader(
 //                new InputStreamReader(p2.getInputStream()));
-        char[] cat = para.toCharArray();
-        for (int i = 0; i < cat.length; i++) {
-            bw.write(cat[i]);
-        }
-        bw.close();
-        aln = file.getPath().substring(0, file.getPath().lastIndexOf(".")) + ".aln";
-        p2.getInputStream().close();
-        if (p2.waitFor() != 0) {
-            System.out.println("exit value = " +
-                    p2.exitValue());
+            char[] cat = para.toCharArray();
+            for (int i = 0; i < cat.length; i++) {
+                bw.write(cat[i]);
+            }
+            bw.close();
+            aln = file.getPath().substring(0, file.getPath().lastIndexOf(".")) + ".aln";
+            p2.getInputStream().close();
+            if (p2.waitFor() != 0) {
+                System.out.println("exit value = " +
+                        p2.exitValue());
+            }
+        } else {
+            throw new Exception("Invalid Fasta File");
         }
 //            DataGroup.addALNByGroupID(aln, groupID);
         return aln;
     }
 
     private ArrayList<String> decomposeFasta(File file) throws
-            FileNotFoundException, IOException, Exception {
-        ArrayList<String> names = new ArrayList<String>();
+            IOException, Exception {
+        ArrayList<String> names = null;
+        names = new ArrayList<String>();
         BufferedReader br = new BufferedReader(new FileReader(file));
         String name = null;
 //        int numOfSeqs = 0;
@@ -119,10 +124,9 @@ public class Controller {
 //                GeneSeq.addGene(new GeneSeq(name, temp.toString(), groupID));
                 names.add(name);
 //                numOfSeqs++;
-            }
+                }
         }
         return names;
-
     }
 
     private SeqSet decomposeAln(File file, int numOfSeqs)
@@ -134,7 +138,7 @@ public class Controller {
     }
 
     private void parseSeqs(File file, File alnFile) throws
-            FileNotFoundException, SQLException, IOException, Exception {
+            SQLException, IOException, Exception {
 //        ArrayList<String> names = decomposeFasta(file);
         ArrayList<String> fastaNames = decomposeFasta(file);
         int size = fastaNames.size();
@@ -160,7 +164,7 @@ public class Controller {
     }
 
     public DefaultTreeModel createNewDataGroup(File file, String groupName)
-            throws SQLException, IOException, InterruptedException, FileNotFoundException, Exception {
+            throws SQLException, IOException, InterruptedException, Exception {
         groupID = DataGroup.addGroupByName(groupName);
         File alnFile = new File(clutalw(file));
         parseSeqs(file, alnFile);
@@ -348,6 +352,8 @@ public class Controller {
             typingResult[i][1] = score(expData, modData, tolerance);
 //            System.out.println(genesList.get(i).getGeneName());
 //            System.out.println(genesList.get(i).getGeneSequence());
+//            System.out.println(genesList.get(i).getGeneName());
+//            System.out.println(genesList.get(i).getGeneSequence());
         }
         return typingResult;
     }
@@ -388,11 +394,11 @@ public class Controller {
         ArrayList<Double> expMassList = new ArrayList<Double>();
         BufferedReader in = new BufferedReader(new FileReader(dataFile));
         String firstLine = in.readLine();
-        if (!firstLine.startsWith("TITLE")){
+        if (!firstLine.startsWith("TITLE")) {
             throw new Exception("Invalid File Format");
         } else {
             String hIntensity = firstLine.substring(firstLine.indexOf(",")+1, firstLine.indexOf("]")).trim();
-            intensity = intensity*Double.parseDouble(hIntensity)/100;
+            intensity = intensity * Double.parseDouble(hIntensity) / 100;
         }
         if (!in.readLine().equals("TYPE MASSSPEC")) {
             throw new Exception("Invalid File Format");

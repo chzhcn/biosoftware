@@ -70,7 +70,6 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
     private void initComponents() {
 
         newDataGroupFileChooser = new javax.swing.JFileChooser();
-        newGroupNameOptionPane = new javax.swing.JOptionPane();
         expDataFileChooser = new javax.swing.JFileChooser();
         frameSplitPane = new javax.swing.JSplitPane();
         topSplitPane = new javax.swing.JSplitPane();
@@ -129,7 +128,6 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         newDataGroupMenuItem = new javax.swing.JMenuItem();
         openDataGroupMenuItem = new javax.swing.JMenuItem();
         deleteDataGroupMenuItem = new javax.swing.JMenuItem();
-        newDataBaseMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
 
@@ -311,7 +309,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         forStartSpinner.setEnabled(false);
         forStartSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                forStartSpinnerStateChanged(evt);
+                forSpinnerStateChanged(evt);
             }
         });
 
@@ -321,7 +319,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         forEndSpinner.setEnabled(false);
         forEndSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                forStartSpinnerStateChanged(evt);
+                forSpinnerStateChanged(evt);
             }
         });
 
@@ -349,12 +347,17 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         revStartSpinner.setEnabled(false);
         revStartSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                revStartSpinnerStateChanged(evt);
+                endSpinnerStateChanged(evt);
             }
         });
 
         revEndSpinner.setEditor(new javax.swing.JSpinner.NumberEditor(revEndSpinner, ""));
         revEndSpinner.setEnabled(false);
+        revEndSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                endSpinnerStateChanged(evt);
+            }
+        });
 
         jLabel10.setText("End:");
 
@@ -592,9 +595,6 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         });
         fileMenu.add(deleteDataGroupMenuItem);
 
-        newDataBaseMenuItem.setText("Import New Database");
-        fileMenu.add(newDataBaseMenuItem);
-
         menuBar.add(fileMenu);
 
         helpMenu.setText("Help");
@@ -628,6 +628,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
 
     private void newDataGroupMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newDataGroupMenuItemActionPerformed
         // TODO add your handling code here:
+        resetAll();
         try {
             FileNameExtensionFilter filter = new FileNameExtensionFilter("Fasta files", "fasta");
             newDataGroupFileChooser.setFileFilter(filter);
@@ -644,23 +645,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                         groupName = temp;
                     }
                 }
-
-//                InfoFrame infoFrame = new InfoFrame();
-//                infoFrame.setVisible(true);
-//
-//                InfoDialog infoDialog = new InfoDialog(this, false);
-//                infoDialog.setVisible(true);
-
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-//                infoDialog.wait();
-//                Runnable waitDialog =
-//                java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//               seqTree.setModel(controller.createNewDataGroup(file, groupName));
-//                editTogButton.setEnabled(true);
-//                customizedCheckBox.setEnabled(true);
-//            }
-//        });
                 seqTree.setModel(controller.createNewDataGroup(file, groupName));
                 editTogButton.setEnabled(true);
                 customizedCheckBox.setEnabled(true);
@@ -669,11 +654,11 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
 //                infoD.dispose();
             }
         } catch (SQLException ex) {
+            if (ex.getMessage().equals("column name is not unique")) {
+                JOptionPane.showMessageDialog(null, "Duplicate Group Name, Rename",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
             ex.printStackTrace();
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (FileNotFoundException ex) {
-            JOptionPane.showMessageDialog(null, "File Not Exist!",
-                    "Error", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, "Oops, we have an IO problem. Retry",
@@ -687,6 +672,9 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            return;
         }
     }//GEN-LAST:event_newDataGroupMenuItemActionPerformed
 
@@ -708,11 +696,9 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                 if (lpth == 0 || lfth == 0 || lvth == 0 || hvth == 0) {
                     throw new Exception("Threshod Value must greater than 0");
                 }
-
                 if (lvth >= hvth) {
                     throw new Exception("Primer Max-Length must be greater then Min-Length");
                 }
-
                 DataGroup.setThesholdByID(lpth, lfth, lvth, hvth, controller.getGroupID());
                 String starSeq = DataGroup.getStarSeqByGroupID(controller.getGroupID());
                 ArrayList<String> seqs = GeneSeq.getSeqsByGroupID(controller.getGroupID());
@@ -721,8 +707,8 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                 for (PrimerPair p : primerPairs) {
                     PrimerPair.AddPrimerPair(p);
                 }
-
                 primerTable.setModel(controller.pupolatePrimerTableModel(primerPairs));
+                controller.modifyTableHeader(primerTable);
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -731,6 +717,9 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                 JOptionPane.showMessageDialog(null, e.getMessage(),
                         "Error", JOptionPane.ERROR_MESSAGE);
 //                e.printStackTrace();
+            } finally {
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                return;
             }
 
         }
@@ -755,50 +744,25 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         }
     }//GEN-LAST:event_resetButtonActionPerformed
 
-    /*
-    private void removeAllChangeListener(JSpinner js) {
-    ChangeListener[] cls = js.getChangeListeners();
-    for (int i = 0; i < cls.length; i++) {
-    js.removeChangeListener(cls[i]);
-    }
-    }
-     */
     private void primerTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_primerTableMouseClicked
-        // TODO add your handling code here:
-//        forStartSpinner.removeChangeListener(forStartSpinner.getChangeListeners()[0]);
-//        forEndSpinner.removeChangeListener(forEndSpinner.getChangeListeners()[0]);
-//        revStartSpinner.removeChangeListener(revStartSpinner.getChangeListeners()[0]);
-//        revEndSpinner.removeChangeListener(revEndSpinner.getChangeListeners()[0]);
-//        removeAllChangeListener(forStartSpinner);
-//        removeAllChangeListener(forEndSpinner);
-//        removeAllChangeListener(revStartSpinner);
-//        removeAllChangeListener(revEndSpinner);
-//        for(int i = 0; i < forStartSpinner.getChangeListeners().length; i++) {
-//            forStartSpinner.removeChangeListener(null);
-//        }
-
         int row;
         if ((row = primerTable.getSelectedRow()) != -1) {
-            try {
-                int forStart = Integer.parseInt(primerTable.getValueAt(row, 0).toString());
-                int forEnd = Integer.parseInt(primerTable.getValueAt(row, 1).toString());
-                int revStart = Integer.parseInt(primerTable.getValueAt(row, 3).toString());
-                int revEnd = Integer.parseInt(primerTable.getValueAt(row, 4).toString());
-//            int groupID = Integer.parseInt(primerTable.getValueAt(row, 4).toString());
-                forStartSpinner.setValue(forStart);
-                forEndSpinner.setValue(forEnd);
-                revStartSpinner.setValue(revStart);
-                revEndSpinner.setValue(revEnd);
-                forStartSpinner.setModel(new SpinnerNumberModel(forStart, forStart, forEnd, 1));
-                forEndSpinner.setModel(new SpinnerNumberModel(forEnd, forStart, forEnd, 1));
-                revStartSpinner.setModel(new SpinnerNumberModel(revStart, revStart, revEnd, 1));
-                revEndSpinner.setModel(new SpinnerNumberModel(revEnd, revStart, revEnd, 1));
-                forPrimerText.setText(controller.getPrimerSeq(forStart, forEnd, controller.getGroupID()));
-                revPrimerText.setText(controller.getPrimerSeq(revStart, revEnd, controller.getGroupID()));
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            int forStart = Integer.parseInt(primerTable.getValueAt(row, 0).toString());
+            int forEnd = Integer.parseInt(primerTable.getValueAt(row, 1).toString());
+            int revStart = Integer.parseInt(primerTable.getValueAt(row, 3).toString());
+            int revEnd = Integer.parseInt(primerTable.getValueAt(row, 4).toString());
+//            int groupID = Integer.parseInt(primerTable.getValueAt(row, 4).toString());         
+
+            forStartSpinner.setValue(forStart);
+            forEndSpinner.setValue(forEnd);
+            revStartSpinner.setValue(revStart);
+            revEndSpinner.setValue(revEnd);
+            forStartSpinner.setModel(new SpinnerNumberModel(forStart, forStart, forEnd, 1));
+            forEndSpinner.setModel(new SpinnerNumberModel(forEnd, forStart, forEnd, 1));
+            revStartSpinner.setModel(new SpinnerNumberModel(revStart, revStart, revEnd, 1));
+            revEndSpinner.setModel(new SpinnerNumberModel(revEnd, revStart, revEnd, 1));
+//                forPrimerText.setText(controller.getPrimerSeq(forStart, forEnd, controller.getGroupID()));
+//                revPrimerText.setText(controller.getPrimerSeq(revStart, revEnd, controller.getGroupID()));
         }
     }//GEN-LAST:event_primerTableMouseClicked
 
@@ -816,15 +780,10 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
 
     private void typeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeButtonActionPerformed
         // TODO add your handling code here:
-        
-//        intenText.setText("63");
-//        tolerText.setText("1");
-        System.out.println(intenText.getText());
-        System.out.println(tolerText.getText());
-        System.out.println(pathText.getText());
-        if (checkPrimer()) {
-            if ((tRadioButton.isSelected()) || sRadioButton.isSelected()) {
-                try {
+        try {
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            if (checkPrimer()) {
+                if ((tRadioButton.isSelected()) || sRadioButton.isSelected()) {
                     int groupid = DataGroup.getGroupIDByName(seqTree.getModel().getRoot().toString());
                     int filter = DataGroup.getGroupByID(groupid).getLowFilterLength();
                     PrimerPair primerpair = new PrimerPair(Integer.parseInt(
@@ -841,8 +800,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                         Matcher m = p.matcher(intenText.getText());
                         boolean result = m.find();
                         if (!result) {
-                            JOptionPane.showMessageDialog(this, "Invalid Intensity");
-                            return;
+                            throw new Exception("Invalid Intensity");
                         }
                         expData = controller.getExpMassList(new File(pathText.getText()), Double.parseDouble(intenText.getText()));
 
@@ -862,8 +820,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                         Matcher m = p.matcher(tolerText.getText());
                         boolean result = m.find();
                         if (!result) {
-                            JOptionPane.showMessageDialog(this, "Invalid Tolerance");
-                            return;
+                            throw new Exception("Invalid Tolerance");
                         }
                         data = controller.typing(genesList, expData, primerpair, filter, enzyme, Double.parseDouble(tolerText.getText()));
 
@@ -872,26 +829,29 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                     }
                     String[] columnNames = {"Gene Name", "Coincidence"};
                     resultTable.setModel(new MyTableModel(columnNames, data));
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (FileNotFoundException ex) {
-                    JOptionPane.showMessageDialog(null, "File Not Exist", "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(null, "Oops, we have an IO problem. Retry",
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(),
-                            "Error", JOptionPane.ERROR_MESSAGE);
+
+                } else {
+                    throw new Exception("Please give your enzyme");
                 }
             } else {
-                JOptionPane.showMessageDialog(null, "Please give your enzyme",
-                        "Error", JOptionPane.ERROR_MESSAGE);
+                throw new Exception("Invalid Primers");
             }
-
-        } else {
-            JOptionPane.showMessageDialog(this, "Invalid Primer");
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (FileNotFoundException ex) {
+            JOptionPane.showMessageDialog(null, "File Not Exist", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Oops, we have an IO problem. Retry",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            return;
         }
     }//GEN-LAST:event_typeButtonActionPerformed
 
@@ -904,30 +864,34 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         }
     }//GEN-LAST:event_customizedCheckBoxItemStateChanged
 
-    private void forStartSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_forStartSpinnerStateChanged
-//        try {
-//            // TODO add your handling code here:
-////        int increment = Integer.parseInt(forStartSpinner.getValue().toString())-
-////                Integer.parseInt(((SpinnerNumberModel)forStartSpinner.getModel()).getMinimum().toString());
-////        forPrimerText.setText(forPrimerText.getText().substring(increment+1));
-//            int forStart = Integer.parseInt(forStartSpinner.getValue().toString());
-//            int forEnd = Integer.parseInt(forEndSpinner.getValue().toString());
-//            forPrimerText.setText(controller.getPrimerSeq(forStart, forEnd, controller.getGroupID()));
-//        } catch (SQLException ex) {
-//            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-    }//GEN-LAST:event_forStartSpinnerStateChanged
+    private void forSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_forSpinnerStateChanged
+        // TODO add your handling code here:
+        int forStart = Integer.parseInt(forStartSpinner.getValue().toString());
+        int forEnd = Integer.parseInt(forEndSpinner.getValue().toString());
+        if (forStart < forEnd) {
+            try {
+                forPrimerText.setText(controller.getPrimerSeq(forStart, forEnd, controller.getGroupID()));
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
-    private void revStartSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_revStartSpinnerStateChanged
-//        try {
-//            // TODO add your handling code here:
-//            int revStart = Integer.parseInt(revStartSpinner.getValue().toString());
-//            int revEnd = Integer.parseInt(revEndSpinner.getValue().toString());
-//            revPrimerText.setText(controller.getPrimerSeq(revStart, revEnd, controller.getGroupID()));
-//        } catch (SQLException ex) {
-//            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-    }//GEN-LAST:event_revStartSpinnerStateChanged
+    }//GEN-LAST:event_forSpinnerStateChanged
+
+    private void endSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_endSpinnerStateChanged
+        // TODO add your handling code here:
+        int revStart = Integer.parseInt(revStartSpinner.getValue().toString());
+        int revEnd = Integer.parseInt(revEndSpinner.getValue().toString());
+        if (revStart < revEnd) {
+            try {
+                revPrimerText.setText(controller.getPrimerSeq(revStart, revEnd, controller.getGroupID()));
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_endSpinnerStateChanged
 
     public void refreshFrame(String name) {
         DefaultMutableTreeNode root =
@@ -945,7 +909,6 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                 setThresholdEnabled(false);
                 resetThreshold(controller.getGroupID());
                 resetPrimer();
-
                 ArrayList<PrimerPair> primerList = PrimerPair.getPrimerPairsByGroupID(DataGroup.getGroupIDByName(name));
                 primerTable.setModel(controller.pupolatePrimerTableModel(primerList));
                 controller.modifyTableHeader(primerTable);
@@ -957,34 +920,29 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
 
     }
 
+    private void resetAll() {
+        controller.setGroupID(-1);
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+        seqTree.setModel(new DefaultTreeModel(root));
+        seqTree.setRootVisible(false);
+        primerTable.setModel(new MyTableModel(controller.getPrimerTableNames()));
+        controller.modifyTableHeader(primerTable);
+        editTogButton.setEnabled(false);
+        editTogButton.setText("Edit");
+        customizedCheckBox.setEnabled(false);
+        customizedCheckBox.setSelected(false);
+        setPrimerEnabled(false);
+        setThresholdEnabled(false);
+        resetThreshold();
+        resetPrimer();
+    }
+
     public void resetFrame(String name) {
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) seqTree.getModel().getRoot();
         String rootName = root.toString();
         if (name.equals(rootName)) {
-            controller.setGroupID(-1);
-            root =
-                    new DefaultMutableTreeNode();
-            seqTree.setModel(new DefaultTreeModel(root));
-            seqTree.setRootVisible(false);
-            primerTable.setModel(new MyTableModel(controller.getPrimerTableNames()));
-            controller.modifyTableHeader(primerTable);
-            editTogButton.setEnabled(false);
-            editTogButton.setText("Edit");
-            customizedCheckBox.setEnabled(false);
-            customizedCheckBox.setSelected(false);
-            setPrimerEnabled(false);
-            setThresholdEnabled(false);
-            resetThreshold();
-
-            resetPrimer();
-
+            resetAll();
         }
-
-
-
-
-
-
     }
 
     public void setThresholdEnabled(boolean flag) {
@@ -1040,7 +998,6 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         } else if (Integer.parseInt(forEndSpinner.getValue().toString()) >= Integer.parseInt(revStartSpinner.getValue().toString())) {
             flag = false;
         }
-
         return flag;
     }
 
@@ -1064,7 +1021,6 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         setSpinner(forEndSpinner, 0, 0, Integer.MAX_VALUE);
         setSpinner(revStartSpinner, 0, 0, Integer.MAX_VALUE);
         setSpinner(revEndSpinner, 0, 0, Integer.MAX_VALUE);
-
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
@@ -1103,10 +1059,8 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
     private javax.swing.JSpinner maxSpinner;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JSpinner minSpinner;
-    private javax.swing.JMenuItem newDataBaseMenuItem;
     private javax.swing.JFileChooser newDataGroupFileChooser;
     private javax.swing.JMenuItem newDataGroupMenuItem;
-    private javax.swing.JOptionPane newGroupNameOptionPane;
     private javax.swing.JMenuItem openDataGroupMenuItem;
     private javax.swing.JSpinner pThreSpinner;
     private javax.swing.JFormattedTextField pathText;
