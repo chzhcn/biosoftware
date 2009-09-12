@@ -13,14 +13,19 @@ import java.util.ArrayList;
 public class MSTT {
 
     private SeqSet seqSet;
+//    private String StarSequence;
+//    private ArrayList<String> seqs;
     private int primerLength;
     private int minPCR;
     private int maxPCR;
     private int shortestFrag;
     private int groupID;
 
-    public MSTT(String starSequence, ArrayList<String> seqs, int primerLength, int minPCR, int maxPCR, int shortestFrag, int groupID) {
+    public MSTT(String starSequence, ArrayList<String> seqs, int primerLength,
+            int minPCR, int maxPCR, int shortestFrag, int groupID) {
         seqSet = new SeqSet(starSequence, seqs);
+//        this.StarSequence = starSequence;
+//        this.seqs = seqs;
         this.primerLength = primerLength;
         this.minPCR = minPCR;
         this.maxPCR = maxPCR;

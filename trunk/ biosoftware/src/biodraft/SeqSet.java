@@ -17,6 +17,14 @@ public class SeqSet {
     int labelLength;
     String[] nameArray;
 
+    SeqSet(String starSequence, ArrayList<String> seqs) {
+        starSeq = new StarSequence(starSequence);
+        this.seqs = new ArrayList<Seq>();
+        for (int i = 0; i < seqs.size(); i++) {
+            this.seqs.add(new Seq(seqs.get(i)));
+        }
+    }
+
     public String[] getNameArray() {
         return nameArray;
     }
@@ -31,23 +39,22 @@ public class SeqSet {
         int numOfSeqs = aln.getNumOfSeqs();
         nameArray = new String[numOfSeqs];
 
-
         seqs = new ArrayList<Seq>();
-        starSeq = new StarSequence();
 
+        ArrayList<StringBuffer> sbArray = new ArrayList<StringBuffer>();
+        StringBuffer sbStar = new StringBuffer();
         for (int i = 0; i < numOfSeqs; i++) {
-            seqs.add(new Seq());
+            sbArray.add(new StringBuffer());
         }
 
-        int size = aln.getCharSeq().size();
+        int size = aln.getAlnString().length();
 //            for(int i = dataBegin; i < size; i++) {
 //                  if
 //            }
 
         boolean inSpace = false;
-
         for (int i = dataBegin; i < size; i++) {
-            char c = aln.getCharSeq().get(i);
+            char c = aln.getAlnString().charAt(i);
             labelLength++;
             if (c == ' ') {
                 inSpace = true;
@@ -57,8 +64,6 @@ public class SeqSet {
                 labelLength--;
                 break;
             }
-
-
         }
 
         int enterCount = -1;
@@ -68,7 +73,7 @@ public class SeqSet {
         boolean starFlag = false;
         boolean indicatorChanged = false;
         for (int i = dataBegin - 1; i < size; i++) {
-            char c = aln.getCharSeq().get(i);
+            char c = aln.getAlnString().charAt(i);
 //                  int indicator = 0;
             if (c != '\n') {
 //                       for(int j = 0; j < temp+labelLength; j++)
@@ -81,7 +86,7 @@ public class SeqSet {
                     if (c == '\r') {
                         continue;
                     }
-                    starSeq.add(c);
+                    sbStar.append((char) c);
                 } else {
                     if (c == '\r' || c == ' ') {
                         continue;
@@ -89,7 +94,7 @@ public class SeqSet {
 //                              if (c == '\r') {
 //                                    continue;
 //                              }
-                    seqs.get(indicator).add(c);
+                    sbArray.get(indicator).append((char) c);
                 }
             } else {
 //                StringBuffer bf = new StringBuffer();
@@ -114,7 +119,11 @@ public class SeqSet {
                 i += labelLength;
             }
         }
-
+        starSeq = new StarSequence(sbStar.toString());
+        for (int i = 0; i < numOfSeqs; i++) {
+            seqs.add(new Seq(sbArray.get(i).toString()));
+        }
+    }
 
 //                  for(int j = 0; j < numOfSeqs; j++) {
 //                        char c = aln.getCharSeq().get(i);
@@ -123,38 +132,37 @@ public class SeqSet {
 //                        }
 //                        continue;
 //                  }
-
-    }
-
     private String getName(int begin, ALN aln) {
         String name = null;
-        char[] nameCharArray = new char[labelLength];
-        ArrayList<Character> alnArray = aln.getCharSeq();
-        for (int i = 0; i < labelLength; i++) {
-            nameCharArray[i] = alnArray.get(begin + i);
-        }
-        name = new String(nameCharArray);
+//        char[] nameCharArray = new char[labelLength];
+//        ArrayList<Character> alnArray = aln.getCharSeq();
+        String alnString = aln.getAlnString();
+//        for (int i = 0; i < labelLength; i++) {
+//            nameCharArray[i] = alnArray.get(begin + i);
+//        }
+        name = alnString.substring(begin, begin + labelLength - 1);
+//        name = new String(nameCharArray);
+        name = name.replace("_", ":");
         name = name.trim();
         return name;
     }
 
-    public SeqSet(String starString, ArrayList<String> seqStrings) {
-        starSeq = new StarSequence(stringToArrayListChar(starString));
-        seqs = new ArrayList<Seq>();
-        for (int i = 0; i < seqStrings.size(); i++) {
-            seqs.add(new Seq(stringToArrayListChar(seqStrings.get(i))));
-        }
-    }
-
-    private ArrayList<Character> stringToArrayListChar(String s) {
-        ArrayList<Character> arrayC = new ArrayList<Character>();
-        int starLength = s.length();
-        for (int i = 0; i < starLength; i++) {
-            arrayC.add(s.charAt(i));
-        }
-        return arrayC;
-    }
-
+//    public SeqSet(String starString, ArrayList<String> seqStrings) {
+//        starSeq = new StarSequence(stringToArrayListChar(starString));
+//        seqs = new ArrayList<Seq>();
+//        for (int i = 0; i < seqStrings.size(); i++) {
+//            seqs.add(new Seq(stringToArrayListChar(seqStrings.get(i))));
+//        }
+//    }
+//
+//    private ArrayList<Character> stringToArrayListChar(String s) {
+//        ArrayList<Character> arrayC = new ArrayList<Character>();
+//        int starLength = s.length();
+//        for (int i = 0; i < starLength; i++) {
+//            arrayC.add(s.charAt(i));
+//        }
+//        return arrayC;
+//    }
     public ArrayList<Seq> getSeqs() {
         return seqs;
     }

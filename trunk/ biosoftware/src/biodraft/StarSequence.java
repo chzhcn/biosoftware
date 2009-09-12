@@ -4,8 +4,6 @@
  */
 package biodraft;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author chzhcn
@@ -16,27 +14,25 @@ public class StarSequence extends Seq {
     private PrimerList primerList;
 //      private PCRList pcrList;
 
-    public StarSequence() {
+    public StarSequence(String s) {
 //            seq = new ArrayList<Character>();
+        super(s);
     }
 
-    public StarSequence(ArrayList<Character> arrayC) {
-        super(arrayC);
-    }
-
-
+//    public StarSequence(ArrayList<Character> arrayC) {
+//        super(arrayC);
+//    }
 //      public void add(char c) {
 //            seq.add(c);
 //      }
-    boolean inStar = false;
-    int start = 0, end = 0;
-
+//    boolean inStar = false;
+//    int start = 0, end = 0;
     public void idenPrimer(int primerLength) {
         boolean inStar = false;
         int start = 0, end = 0;
         primerList = new PrimerList();
-        for (int i = 0; i < seq.size(); i++) {
-            char c = seq.get(i);
+        for (int i = 0; i < seq.length(); i++) {
+            char c = seq.charAt(i);
             if (c == '*') {
                 if (inStar == false) {
                     inStar = true;

@@ -23,20 +23,17 @@ public class GeneSeq {
         groupID = id;
     }
 
-    public static boolean addGene(GeneSeq gene) {
+    public static boolean addGene(GeneSeq gene)
+            throws SQLException {
         boolean flag = false;
-        try {
-            String sql = "insert into GeneSeq values(?, ?, ?)";
-            PreparedStatement ps = Main.con.prepareStatement(sql);
-            ps.setString(1, gene.getGeneName());
-            ps.setString(2, gene.getGeneSequence());
-            ps.setInt(3, gene.getGeneGroupID());
-            ps.executeUpdate();
-            flag = true;
-            ps.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        String sql = "insert into GeneSeq values(?, ?, ?)";
+        PreparedStatement ps = Main.con.prepareStatement(sql);
+        ps.setString(1, gene.getGeneName());
+        ps.setString(2, gene.getGeneSequence());
+        ps.setInt(3, gene.getGeneGroupID());
+        ps.executeUpdate();
+        flag = true;
+        ps.close();
         return flag;
     }
 
@@ -100,21 +97,18 @@ public class GeneSeq {
     return gene;
     }
      */
-    public static ArrayList<GeneSeq> getGenesByGroupID(int id) {
+    public static ArrayList<GeneSeq> getGenesByGroupID(int id)
+            throws SQLException {
         ArrayList<GeneSeq> genes = new ArrayList<GeneSeq>();
-        try {
-            String sql = "select * from GeneSeq where groupid = ?";
-            PreparedStatement ps = Main.con.prepareStatement(sql);
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                genes.add(new GeneSeq(rs.getString("name"), rs.getString("sequence"), id));
-            }
-            rs.close();
-            ps.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        String sql = "select * from GeneSeq where groupid = ?";
+        PreparedStatement ps = Main.con.prepareStatement(sql);
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            genes.add(new GeneSeq(rs.getString("name"), rs.getString("sequence"), id));
         }
+        rs.close();
+        ps.close();
         return genes;
     }
 
@@ -134,18 +128,15 @@ public class GeneSeq {
         return seqs;
     }
 
-    public static boolean deleteGenesByGroupID(int id) {
+    public static boolean deleteGenesByGroupID(int id)
+            throws SQLException {
         boolean flag = false;
-        try {
-            String sql = "delete from GeneSeq where groupid = ?";
-            PreparedStatement ps = Main.con.prepareStatement(sql);
-            ps.setInt(1, id);
-            ps.executeUpdate();
-            flag = true;
-            ps.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        String sql = "delete from GeneSeq where groupid = ?";
+        PreparedStatement ps = Main.con.prepareStatement(sql);
+        ps.setInt(1, id);
+        ps.executeUpdate();
+        flag = true;
+        ps.close();
         return flag;
     }
 
@@ -169,22 +160,19 @@ public class GeneSeq {
     return genes.size();
     }
      */
-    public static int getGeneNumByGroupID(int groupID) {
+    public static int getGeneNumByGroupID(int groupID)
+            throws SQLException {
         //==>
         ArrayList<GeneSeq> genes = new ArrayList<GeneSeq>();
-        try {
-            String sql = "select * from GeneSeq where groupid = ?";
-            PreparedStatement ps = Main.con.prepareStatement(sql);
-            ps.setInt(1, groupID);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                genes.add(new GeneSeq(rs.getString("name"), rs.getString("sequence"), rs.getInt("groupid")));
-            }
-            rs.close();
-            ps.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        String sql = "select * from GeneSeq where groupid = ?";
+        PreparedStatement ps = Main.con.prepareStatement(sql);
+        ps.setInt(1, groupID);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            genes.add(new GeneSeq(rs.getString("name"), rs.getString("sequence"), rs.getInt("groupid")));
         }
+        rs.close();
+        ps.close();
         return genes.size();
     }
 

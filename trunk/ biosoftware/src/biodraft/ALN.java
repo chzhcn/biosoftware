@@ -6,7 +6,6 @@ package biodraft;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  *
@@ -14,26 +13,27 @@ import java.util.ArrayList;
  */
 public class ALN {
 
-    private ArrayList<Character> charSeq;
+//    private ArrayList<Character> charSeq;
+    private String alnString;
 //      private ArrayList<Character> dataSeq;
     private int numOfSeqs;
     private SeqSet seqSet;
 
-    public int getNumOfSeqs() {
-        return numOfSeqs;
+    public String getAlnString() {
+        return alnString;
     }
 
-    public ArrayList<Character> getCharSeq() {
-        return charSeq;
+    public int getNumOfSeqs() {
+        return numOfSeqs;
     }
 
     public int FilterHeader() {
         int enterCounter = 0;
 
         int i = 0;
-        int size = charSeq.size();
+        int size = alnString.length();
         for (i = 0; i < size; i++) {
-            char c = charSeq.get(i);
+            char c = alnString.charAt(i);
             if (c == '\n') {
                 enterCounter++;
             }
@@ -53,13 +53,16 @@ public class ALN {
 //
 //      }
     public ALN(BufferedReader in, int numOfSeqs) throws IOException {
-        charSeq = new ArrayList<Character>();
+//        BufferedReader in = new BufferedReader(new FileReader(file));
+        StringBuffer sb = new StringBuffer(2048);
+//        charSeq = new ArrayList<Character>();
         this.numOfSeqs = numOfSeqs;
-
         int c;
         while ((c = in.read()) != -1) {
-            charSeq.add((char) c);
+//            charSeq.add((char) c);
+            sb.append((char) c);
         }
+        alnString = sb.toString();
         seqSet = new SeqSet(this);
     }
 
