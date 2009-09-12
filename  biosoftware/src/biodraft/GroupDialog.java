@@ -11,6 +11,9 @@
 package biodraft;
 
 import java.awt.Color;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
@@ -145,19 +148,23 @@ public class GroupDialog extends javax.swing.JDialog {
         // TODO add your handling code here:
         int row;
         if ((row = groupsTable.getSelectedRow()) != -1) {
-            String selectedGroup = (groupsTable.getModel()).getValueAt(row, 0).toString();
-            int id = DataGroup.getGroupIDByName(selectedGroup);
-            if (PrimerPair.deletePrimerPairsByGroupID(id) && GeneSeq.deleteGenesByGroupID(id)) {
-                if (DataGroup.deleteGroupByName(selectedGroup)) {
-                    messageLable.setForeground(Color.black);
-                    messageLable.setText("Deletion succeed");
-                    groupsTable.setModel(controller.populateGroupTableModel(this));//------------>
-                    frameRequestor.resetFrame(selectedGroup);
+            try {
+                String selectedGroup = (groupsTable.getModel()).getValueAt(row, 0).toString();
+                int id = DataGroup.getGroupIDByName(selectedGroup);
+                if (PrimerPair.deletePrimerPairsByGroupID(id) && GeneSeq.deleteGenesByGroupID(id)) {
+                    if (DataGroup.deleteGroupByName(selectedGroup)) {
+                        messageLable.setForeground(Color.black);
+                        messageLable.setText("Deletion succeed");
+                        groupsTable.setModel(controller.populateGroupTableModel(this)); //------------>
+                        frameRequestor.resetFrame(selectedGroup);
+                    } else {
+                        messageLable.setText("Error : Deletion failed");
+                    }
                 } else {
                     messageLable.setText("Error : Deletion failed");
                 }
-            } else {
-                messageLable.setText("Error : Deletion failed");
+            } catch (SQLException ex) {
+                Logger.getLogger(GroupDialog.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             messageLable.setText("Warning : Please select a group first");

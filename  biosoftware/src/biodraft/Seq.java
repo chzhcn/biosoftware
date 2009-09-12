@@ -4,38 +4,36 @@
  */
 package biodraft;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author chzhcn
  */
 public class Seq {
 
-    protected ArrayList<Character> seq;
+    protected String seq;
 
-    public Seq() {
-        seq = new ArrayList<Character>();
-    }
-
-    public Seq(ArrayList<Character> seq) {
-//            seq = new ArrayList<Character>();
-        this.seq = seq;
-    }
-
-    public ArrayList<Character> getSeq() {
+    public String getSeq() {
         return seq;
     }
 
-    public void add(char c) {
-        seq.add(c);
+    public Seq(String seq) {
+        this.seq = seq;
     }
-
-    public String toString() {
-        StringBuffer sb = new StringBuffer();
-        for (char c : seq) {
-            sb.append(c);
-        }
-        return sb.toString();
-    }
+//    public Seq(ArrayList<Character> seq) {
+////            seq = new ArrayList<Character>();
+//        this.seq = seq;
+//    }
+//    public ArrayList<Character> getSeq() {
+//        return seq;
+//    }
+//    public void add(char c) {
+//        seq.add(c);
+//    }
+//    public String toString() {
+//        StringBuffer sb = new StringBuffer();
+//        for (char c : seq) {
+//            sb.append(c);
+//        }
+//        return sb.toString();
+//    }
 }

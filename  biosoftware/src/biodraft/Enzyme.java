@@ -2,15 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package biodraft;
 
 /**
  *
- * @author Owner
+ * @author Administrator
  */
-public interface FrameSetable {
-
-    void refreshFrame(String name);
-
-    void resetFrame(String name);
+public enum Enzyme {
+    T7, SP6;
 }
