@@ -4,8 +4,6 @@
   <NonVisualComponents>
     <Component class="javax.swing.JFileChooser" name="newDataGroupFileChooser">
     </Component>
-    <Component class="javax.swing.JOptionPane" name="newGroupNameOptionPane">
-    </Component>
     <Component class="javax.swing.JFileChooser" name="expDataFileChooser">
     </Component>
     <Menu class="javax.swing.JMenuBar" name="menuBar">
@@ -38,11 +36,6 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="openDataGroupMenuItemActionPerformed"/>
               </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="newDataBaseMenuItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Import New Database"/>
-              </Properties>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -542,7 +535,7 @@
                     <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="forStartSpinnerStateChanged"/>
+                    <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="forSpinnerStateChanged"/>
                   </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel7">
@@ -558,7 +551,7 @@
                     <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="forStartSpinnerStateChanged"/>
+                    <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="forSpinnerStateChanged"/>
                   </Events>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="customizedCheckBox">
@@ -608,7 +601,7 @@
                     <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="revStartSpinnerStateChanged"/>
+                    <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="endSpinnerStateChanged"/>
                   </Events>
                 </Component>
                 <Component class="javax.swing.JSpinner" name="revEndSpinner">
@@ -618,6 +611,9 @@
                     </Property>
                     <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="endSpinnerStateChanged"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel10">
                   <Properties>

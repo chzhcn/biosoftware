@@ -205,16 +205,16 @@ public class PCRList {
         switch (c) {
             case 'A':
             case 'a':
-                return 313.21;
+                return 329.2;
             case 'C':
             case 'c':
-                return 289.19;
+                return 305.2;
             case 'G':
             case 'g':
-                return 329.21;
+                return 345.2;
             case 'T':
             case 't':
-                return 304.2;
+                return 361.2;
             default:
                 return 0.0;
         }
