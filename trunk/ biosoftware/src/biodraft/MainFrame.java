@@ -18,6 +18,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
@@ -50,8 +52,8 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
             ButtonGroup buttongroup = new ButtonGroup();
             buttongroup.add(tRadioButton);
             buttongroup.add(sRadioButton);
-            intensityText = new JFormattedTextField(new java.text.DecimalFormat("##.0"));
-            toleranceText = new JFormattedTextField(new java.text.DecimalFormat("##.0"));
+//            intenText = new JFormattedTextField(new java.text.DecimalFormat("##.0"));
+//            tolerText = new JFormattedTextField(new java.text.DecimalFormat("##.0"));
         } catch (SQLException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -120,8 +122,8 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         tRadioButton = new javax.swing.JRadioButton();
         sRadioButton = new javax.swing.JRadioButton();
         jLabel16 = new javax.swing.JLabel();
-        intensityText = new javax.swing.JFormattedTextField();
-        toleranceText = new javax.swing.JFormattedTextField();
+        intenText = new javax.swing.JFormattedTextField();
+        tolerText = new javax.swing.JFormattedTextField();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         newDataGroupMenuItem = new javax.swing.JMenuItem();
@@ -213,7 +215,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                         .addComponent(resetButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(editTogButton)))
-                .addContainerGap(208, Short.MAX_VALUE))
+                .addContainerGap(225, Short.MAX_VALUE))
         );
         thresPanelLayout.setVerticalGroup(
             thresPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -261,9 +263,9 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         priemrPanel.setLayout(priemrPanelLayout);
         priemrPanelLayout.setHorizontalGroup(
             priemrPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 737, Short.MAX_VALUE)
+            .addGap(0, 754, Short.MAX_VALUE)
             .addGroup(priemrPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(primerScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 737, Short.MAX_VALUE))
+                .addComponent(primerScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 754, Short.MAX_VALUE))
         );
         priemrPanelLayout.setVerticalGroup(
             priemrPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -482,7 +484,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
             .addGroup(typingPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(typingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(resultScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 519, Short.MAX_VALUE)
+                    .addComponent(resultScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 536, Short.MAX_VALUE)
                     .addComponent(typeButton, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(typingPanelLayout.createSequentialGroup()
                         .addGroup(typingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -492,20 +494,21 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                             .addComponent(jLabel12))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(typingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(typingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, typingPanelLayout.createSequentialGroup()
-                                    .addGroup(typingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(intensityText, javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(tRadioButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(typingPanelLayout.createSequentialGroup()
+                                .addGroup(typingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(typingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(sRadioButton)))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, typingPanelLayout.createSequentialGroup()
-                                    .addComponent(toleranceText, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jLabel15)))
-                            .addComponent(pathText, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE))
+                                        .addGroup(typingPanelLayout.createSequentialGroup()
+                                            .addGap(1, 1, 1)
+                                            .addComponent(intenText, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(tolerText, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(tRadioButton))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(typingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel15)
+                                    .addComponent(sRadioButton)
+                                    .addComponent(jLabel16))
+                                .addGap(166, 166, 166))
+                            .addComponent(pathText, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(fileButton)))
                 .addContainerGap())
@@ -522,17 +525,17 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                 .addGroup(typingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
                     .addComponent(jLabel16)
-                    .addComponent(intensityText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(intenText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(typingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
-                    .addComponent(tRadioButton)
-                    .addComponent(sRadioButton))
+                    .addComponent(sRadioButton)
+                    .addComponent(tRadioButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(typingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
-                    .addComponent(toleranceText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel15))
+                    .addComponent(jLabel15)
+                    .addComponent(tolerText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10)
                 .addComponent(typeButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -553,9 +556,9 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         );
         bottomPanelLayout.setVerticalGroup(
             bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(bottomPanelLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bottomPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(typingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
                     .addComponent(selectPrimerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -609,7 +612,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(frameSplitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 817, Short.MAX_VALUE)
+                .addComponent(frameSplitPane)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -813,6 +816,12 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
 
     private void typeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeButtonActionPerformed
         // TODO add your handling code here:
+        
+//        intenText.setText("63");
+//        tolerText.setText("1");
+        System.out.println(intenText.getText());
+        System.out.println(tolerText.getText());
+        System.out.println(pathText.getText());
         if (checkPrimer()) {
             if ((tRadioButton.isSelected()) || sRadioButton.isSelected()) {
                 try {
@@ -825,8 +834,18 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                             revEndSpinner.getValue().toString()), 0, groupid);
                     ArrayList<GeneSeq> genesList = GeneSeq.getGenesByGroupID(groupid);
                     ArrayList<Double> expData;
-                    if (intensityText.getText() != "") {
-                        expData = controller.getExpMassList(new File(pathText.getText()), Double.parseDouble(intensityText.getText()));
+                    if (intenText.getText() != "") {
+//                    if(!(intensityText.getText().equals(""))) {
+                        String intensity = "[1-9]{0,1}[0-9](\\.[0-9])?";
+                        Pattern p = Pattern.compile(intensity);
+                        Matcher m = p.matcher(intenText.getText());
+                        boolean result = m.find();
+                        if (!result) {
+                            JOptionPane.showMessageDialog(this, "Invalid Intensity");
+                            return;
+                        }
+                        expData = controller.getExpMassList(new File(pathText.getText()), Double.parseDouble(intenText.getText()));
+
                     } else {
                         expData = controller.getExpMassList(new File(pathText.getText()), 0);
                     }
@@ -837,8 +856,17 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                         enzyme = Enzyme.SP6;
                     }
                     Object[][] data;
-                    if (toleranceText.getText() != "") {
-                        data = controller.typing(genesList, expData, primerpair, filter, enzyme, Double.parseDouble(toleranceText.getText()));
+                    if (!(tolerText.getText().equals(""))) {
+                        String intensity = "[1-9]{0,1}[0-9](\\.[0-9])?";
+                        Pattern p = Pattern.compile(intensity);
+                        Matcher m = p.matcher(tolerText.getText());
+                        boolean result = m.find();
+                        if (!result) {
+                            JOptionPane.showMessageDialog(this, "Invalid Tolerance");
+                            return;
+                        }
+                        data = controller.typing(genesList, expData, primerpair, filter, enzyme, Double.parseDouble(tolerText.getText()));
+
                     } else {
                         data = controller.typing(genesList, expData, primerpair, filter, enzyme, 0);
                     }
@@ -1053,7 +1081,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
     private javax.swing.JSpinner forStartSpinner;
     private javax.swing.JSplitPane frameSplitPane;
     private javax.swing.JMenu helpMenu;
-    private javax.swing.JFormattedTextField intensityText;
+    private javax.swing.JFormattedTextField intenText;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1096,7 +1124,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
     private javax.swing.JTree seqTree;
     private javax.swing.JRadioButton tRadioButton;
     private javax.swing.JPanel thresPanel;
-    private javax.swing.JFormattedTextField toleranceText;
+    private javax.swing.JFormattedTextField tolerText;
     private javax.swing.JPanel topRightPanel;
     private javax.swing.JSplitPane topSplitPane;
     private javax.swing.JScrollPane treeScrollPane;
