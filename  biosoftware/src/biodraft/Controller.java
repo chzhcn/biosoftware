@@ -391,7 +391,7 @@ public class Controller {
         if (!firstLine.startsWith("TITLE")){
             throw new Exception("Invalid File Format");
         } else {
-            String hIntensity = firstLine.substring(firstLine.indexOf(","), firstLine.indexOf("]")).trim();
+            String hIntensity = firstLine.substring(firstLine.indexOf(",")+1, firstLine.indexOf("]")).trim();
             intensity = intensity*Double.parseDouble(hIntensity)/100;
         }
         if (!in.readLine().equals("TYPE MASSSPEC")) {
