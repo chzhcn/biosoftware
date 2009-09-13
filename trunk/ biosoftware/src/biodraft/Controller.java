@@ -24,8 +24,10 @@ import java.util.StringTokenizer;
  *
  * @author Administrator
  */
+
 public class Controller {
 
+    public final int HOMASS = 18;
     int groupID = -1;
     private final String[] primerTableNames = {"Forward Primer\nStart",
         "Forward Primer\nEnd", "Forward Primer\nSequence", "Reverse Primer\nStart",
@@ -278,7 +280,7 @@ public class Controller {
 //    }
 
     public Object[][] typing(ArrayList<GeneSeq> genesList,
-            ArrayList<Double> expData, PrimerPair primerpair, int filter, Enzyme enzyme, double tolerance) {
+            ArrayList<Double> expData, PrimerPair primerpair, int filter, Enzyme enzyme, double tolerance, int charge) {
         Object[][] typingResult = new Object[genesList.size()][2];
         int start = primerpair.getForStart();
         int end = primerpair.getRevEnd();
@@ -294,24 +296,24 @@ public class Controller {
                     switch (sequence.charAt(j)) {
                         case 'A':
                         case 'a':
-                            tempMass += 313.21;
+                            tempMass += 329.2;
                             break;
                         case 'C':
                         case 'c':
-                            tempMass += 289.19;
+                            tempMass += 305.2;
                             break;
                         case 'G':
                         case 'g':
-                            tempMass += 329.21;
+                            tempMass += 345.2;
                             if (j - cursor + 1 >= filter) {
-                                modData.add(tempMass);
+                                modData.add(tempMass + HOMASS + charge);
                             }
                             cursor = j + 1;
                             tempMass = 0;
                             break;
                         case 'T':
                         case 't':
-                            tempMass += 304.2;
+                            tempMass += 361.2;
                             break;
                         default:
                             tempMass += 0.0;
@@ -323,15 +325,15 @@ public class Controller {
                     switch (sequence.charAt(j)) {
                         case 'T':
                         case 't':
-                            tempMass += 313.21;
+                            tempMass += 329.2;
                             break;
                         case 'G':
                         case 'g':
-                            tempMass += 289.19;
+                            tempMass += 305.2;
                             break;
                         case 'C':
                         case 'c':
-                            tempMass += 329.21;
+                            tempMass += 345.2;
                             if (j - cursor + 1 >= filter) {
                                 modData.add(tempMass);
                             }
@@ -340,7 +342,7 @@ public class Controller {
                             break;
                         case 'A':
                         case 'a':
-                            tempMass += 304.2;
+                            tempMass += 361.2;
                             break;
                         default:
                             tempMass += 0.0;

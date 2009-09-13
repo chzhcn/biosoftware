@@ -52,6 +52,9 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
             ButtonGroup buttongroup = new ButtonGroup();
             buttongroup.add(tRadioButton);
             buttongroup.add(sRadioButton);
+            ButtonGroup chargeGroup = new ButtonGroup();
+            chargeGroup.add(posRadioButton);
+            chargeGroup.add(negRadioButton);
 //            intenText = new JFormattedTextField(new java.text.DecimalFormat("##.0"));
 //            tolerText = new JFormattedTextField(new java.text.DecimalFormat("##.0"));
         } catch (SQLException ex) {
@@ -123,6 +126,9 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         jLabel16 = new javax.swing.JLabel();
         intenText = new javax.swing.JFormattedTextField();
         tolerText = new javax.swing.JFormattedTextField();
+        jLabel17 = new javax.swing.JLabel();
+        posRadioButton = new javax.swing.JRadioButton();
+        negRadioButton = new javax.swing.JRadioButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         newDataGroupMenuItem = new javax.swing.JMenuItem();
@@ -133,16 +139,24 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        frameSplitPane.setDividerLocation(300);
         frameSplitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
+        topSplitPane.setDividerLocation(200);
+
+        treeScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         treeScrollPane.setMinimumSize(new java.awt.Dimension(35, 35));
 
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
         seqTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        seqTree.setMaximumSize(new java.awt.Dimension(400, 320));
+        seqTree.setPreferredSize(new java.awt.Dimension(234, 260));
         seqTree.setRootVisible(false);
         treeScrollPane.setViewportView(seqTree);
 
         topSplitPane.setLeftComponent(treeScrollPane);
+
+        topRightPanel.setPreferredSize(new java.awt.Dimension(600, 273));
 
         thresPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Primer Selection Threshold"));
 
@@ -213,7 +227,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                         .addComponent(resetButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(editTogButton)))
-                .addContainerGap(225, Short.MAX_VALUE))
+                .addContainerGap(176, Short.MAX_VALUE))
         );
         thresPanelLayout.setVerticalGroup(
             thresPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -250,6 +264,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                 "Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6", "Title 7"
             }
         ));
+        primerTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
         primerTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 primerTableMouseClicked(evt);
@@ -261,17 +276,15 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         priemrPanel.setLayout(priemrPanelLayout);
         priemrPanelLayout.setHorizontalGroup(
             priemrPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 754, Short.MAX_VALUE)
+            .addGap(0, 705, Short.MAX_VALUE)
             .addGroup(priemrPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(primerScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 754, Short.MAX_VALUE))
+                .addComponent(primerScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE))
         );
         priemrPanelLayout.setVerticalGroup(
             priemrPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 119, Short.MAX_VALUE)
+            .addGap(0, 143, Short.MAX_VALUE)
             .addGroup(priemrPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(priemrPanelLayout.createSequentialGroup()
-                    .addComponent(primerScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addComponent(primerScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout topRightPanelLayout = new javax.swing.GroupLayout(topRightPanel);
@@ -299,7 +312,10 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
 
         frameSplitPane.setLeftComponent(topSplitPane);
 
+        bottomPanel.setPreferredSize(new java.awt.Dimension(947, 250));
+
         selectPrimerPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Selected Primer"));
+        selectPrimerPanel.setPreferredSize(new java.awt.Dimension(238, 200));
 
         jLabel5.setText("Forward Primer:");
 
@@ -376,35 +392,40 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
             .addGroup(selectPrimerPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
-                    .addComponent(customizedCheckBox)
-                    .addComponent(jLabel5)
                     .addGroup(selectPrimerPanelLayout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(forEndSpinner)
-                            .addComponent(forStartSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
-                    .addComponent(jLabel8)
+                        .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(customizedCheckBox)
+                            .addComponent(jLabel5)
+                            .addGroup(selectPrimerPanelLayout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel6))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(forEndSpinner)
+                                    .addComponent(forStartSpinner)))
+                            .addGroup(selectPrimerPanelLayout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel9))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(revEndSpinner)
+                                    .addComponent(revStartSpinner)))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE))
+                        .addGap(61, 61, 61))
                     .addGroup(selectPrimerPanelLayout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel9))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(revEndSpinner)
-                            .addComponent(revStartSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
+                        .addComponent(jLabel8)
+                        .addContainerGap(122, Short.MAX_VALUE))
+                    .addGroup(selectPrimerPanelLayout.createSequentialGroup()
+                        .addComponent(jScrollPane2)
+                        .addGap(66, 66, 66))))
         );
         selectPrimerPanelLayout.setVerticalGroup(
             selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(selectPrimerPanelLayout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(customizedCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
@@ -418,7 +439,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                     .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(selectPrimerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -430,14 +451,16 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                     .addComponent(jLabel10))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(142, Short.MAX_VALUE))
         );
 
         typingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Typing"));
+        typingPanel.setPreferredSize(new java.awt.Dimension(679, 180));
 
         jLabel11.setText("Import Mass-Spectrometry Data:");
 
         pathText.setText("C://");
+        pathText.setEnabled(false);
 
         fileButton.setText("Open File");
         fileButton.addActionListener(new java.awt.event.ActionListener() {
@@ -480,6 +503,12 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
 
         jLabel16.setText("%");
 
+        jLabel17.setText("Charge");
+
+        posRadioButton.setText("+1");
+
+        negRadioButton.setText("-1");
+
         javax.swing.GroupLayout typingPanelLayout = new javax.swing.GroupLayout(typingPanel);
         typingPanel.setLayout(typingPanelLayout);
         typingPanelLayout.setHorizontalGroup(
@@ -487,8 +516,10 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
             .addGroup(typingPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(typingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(resultScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 536, Short.MAX_VALUE)
-                    .addComponent(typeButton, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, typingPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel17)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 506, Short.MAX_VALUE)
+                        .addComponent(typeButton))
                     .addGroup(typingPanelLayout.createSequentialGroup()
                         .addGroup(typingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel11)
@@ -503,18 +534,23 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                                         .addGroup(typingPanelLayout.createSequentialGroup()
                                             .addGap(1, 1, 1)
                                             .addComponent(intenText, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(tolerText, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(tolerText, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(posRadioButton))
                                     .addComponent(tRadioButton))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(typingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel15)
                                     .addComponent(sRadioButton)
-                                    .addComponent(jLabel16))
-                                .addGap(166, 166, 166))
-                            .addComponent(pathText, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE))
+                                    .addComponent(jLabel16)
+                                    .addComponent(negRadioButton))
+                                .addGap(106, 106, 106))
+                            .addComponent(pathText, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(fileButton)))
                 .addContainerGap())
+            .addGroup(typingPanelLayout.createSequentialGroup()
+                .addComponent(resultScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 647, Short.MAX_VALUE)
+                .addGap(20, 20, 20))
         );
         typingPanelLayout.setVerticalGroup(
             typingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -540,10 +576,13 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                     .addComponent(jLabel15)
                     .addComponent(tolerText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10)
-                .addComponent(typeButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(resultScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18))
+                .addGroup(typingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(typeButton)
+                    .addComponent(jLabel17)
+                    .addComponent(posRadioButton)
+                    .addComponent(negRadioButton))
+                .addGap(18, 18, 18)
+                .addComponent(resultScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout bottomPanelLayout = new javax.swing.GroupLayout(bottomPanel);
@@ -554,7 +593,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                 .addContainerGap()
                 .addComponent(selectPrimerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(typingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(typingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE)
                 .addContainerGap())
         );
         bottomPanelLayout.setVerticalGroup(
@@ -562,8 +601,8 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bottomPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(typingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
-                    .addComponent(selectPrimerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(typingPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+                    .addComponent(selectPrimerPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -619,7 +658,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(frameSplitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 608, Short.MAX_VALUE)
+                .addComponent(frameSplitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 754, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -647,6 +686,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                 }
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 seqTree.setModel(controller.createNewDataGroup(file, groupName));
+                seqTree.setRootVisible(true);
                 editTogButton.setEnabled(true);
                 customizedCheckBox.setEnabled(true);
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -793,39 +833,54 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
                             revEndSpinner.getValue().toString()), 0, groupid);
                     ArrayList<GeneSeq> genesList = GeneSeq.getGenesByGroupID(groupid);
                     ArrayList<Double> expData;
-                    if (intenText.getText() != "") {
-//                    if(!(intensityText.getText().equals(""))) {
-                        String intensity = "[1-9]{0,1}[0-9](\\.[0-9])?";
-                        Pattern p = Pattern.compile(intensity);
-                        Matcher m = p.matcher(intenText.getText());
-                        boolean result = m.find();
-                        if (!result) {
+//                    if (intenText.getText() != "") {
+                    double intensity;
+                    if (!(intenText.getText().equals(""))) {
+                        String intensityText = "[1-9]{0,1}[0-9]((\\.[0-9])?)";
+                        Pattern pi = Pattern.compile(intensityText);
+                        Matcher mi = pi.matcher(intenText.getText());
+                        boolean iresult = mi.find();
+                        if (!iresult) {
                             throw new Exception("Invalid Intensity");
                         }
-                        expData = controller.getExpMassList(new File(pathText.getText()), Double.parseDouble(intenText.getText()));
-
+                        intensity = Double.parseDouble(intenText.getText());
+                        if (intensity > 100) {
+                            throw new Exception("Invalid Intensity");
+                        }
                     } else {
-                        expData = controller.getExpMassList(new File(pathText.getText()), 0);
+                        intensity = 0;
                     }
+
+                    expData = controller.getExpMassList(new File(pathText.getText()), intensity);
                     Enzyme enzyme;
                     if (tRadioButton.isSelected()) {
                         enzyme = Enzyme.T7;
                     } else {
                         enzyme = Enzyme.SP6;
                     }
+                    double tolerance;
                     Object[][] data;
                     if (!(tolerText.getText().equals(""))) {
-                        String intensity = "[1-9]{0,1}[0-9](\\.[0-9])?";
-                        Pattern p = Pattern.compile(intensity);
-                        Matcher m = p.matcher(tolerText.getText());
-                        boolean result = m.find();
-                        if (!result) {
+                        String toleranceText = "[1-9]{0,1}[0-9]((\\.[0-9])?)";
+                        Pattern pt = Pattern.compile(toleranceText);
+                        Matcher mt = pt.matcher(tolerText.getText());
+                        boolean tresult = mt.find();
+                        if (!tresult) {
                             throw new Exception("Invalid Tolerance");
                         }
-                        data = controller.typing(genesList, expData, primerpair, filter, enzyme, Double.parseDouble(tolerText.getText()));
-
+                        tolerance = Double.parseDouble(tolerText.getText());
                     } else {
-                        data = controller.typing(genesList, expData, primerpair, filter, enzyme, 0);
+                        tolerance = 0;
+                    }
+
+                    if (posRadioButton.isSelected()) {
+                        data = controller.typing(genesList, expData, primerpair, filter, enzyme, tolerance, 1);
+                    } else if (negRadioButton.isSelected()) {
+                        data = controller.typing(genesList, expData, primerpair, filter, enzyme, tolerance, -1);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Please give your charge in experiment",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
                     }
                     String[] columnNames = {"Gene Name", "Coincidence"};
                     resultTable.setModel(new MyTableModel(columnNames, data));
@@ -901,6 +956,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
             try {
                 controller.setGroupID(DataGroup.getGroupIDByName(name));
                 seqTree.setModel(controller.populateTreeModel(DataGroup.getGroupIDByName(name)));
+                seqTree.setRootVisible(true);
                 editTogButton.setEnabled(true);
                 editTogButton.setText("Edit");
                 customizedCheckBox.setEnabled(true);
@@ -927,6 +983,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
         seqTree.setRootVisible(false);
         primerTable.setModel(new MyTableModel(controller.getPrimerTableNames()));
         controller.modifyTableHeader(primerTable);
+        resultTable.setModel(new MyTableModel(controller.getResultTableNames()));
         editTogButton.setEnabled(false);
         editTogButton.setText("Edit");
         customizedCheckBox.setEnabled(false);
@@ -1046,6 +1103,7 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1059,11 +1117,13 @@ public class MainFrame extends javax.swing.JFrame implements FrameSetable {
     private javax.swing.JSpinner maxSpinner;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JSpinner minSpinner;
+    private javax.swing.JRadioButton negRadioButton;
     private javax.swing.JFileChooser newDataGroupFileChooser;
     private javax.swing.JMenuItem newDataGroupMenuItem;
     private javax.swing.JMenuItem openDataGroupMenuItem;
     private javax.swing.JSpinner pThreSpinner;
     private javax.swing.JFormattedTextField pathText;
+    private javax.swing.JRadioButton posRadioButton;
     private javax.swing.JPanel priemrPanel;
     private javax.swing.JScrollPane primerScrollPane;
     private javax.swing.JTable primerTable;
