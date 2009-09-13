@@ -22,12 +22,8 @@ public class MyTableModel extends AbstractTableModel {
 
     public MyTableModel(String[] names) {
         this.columnNames = names;
-        this.data = new Object[5][7];
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 7; j++) {
-                data[i][j] = "";
-            }
-        }
+        this.data = new Object[0][2];
+        
     }
 
     public int getColumnCount() {
